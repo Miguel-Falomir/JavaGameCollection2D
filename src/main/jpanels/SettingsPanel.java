@@ -1,14 +1,11 @@
 package main.jpanels;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 import javax.swing.BoxLayout;
@@ -17,7 +14,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.tools.DocumentationTool.Location;
 
 import main.Gui;
 
@@ -39,11 +35,8 @@ public class SettingsPanel extends JPanel {
 		
 		// getters and setters
 		public String getId() {return id;}
-		//public void setId(String id) {this.id = id;}
-		//public String getName() {return name;}
 		public void setName(String name) {this.name = name;}
 		public Locale getLocale() {return locale;}
-		//public void setLocale(Locale locale) {this.locale = locale;}
 		
 		// constructor
 		public LocationItem (String id, Locale locale) {
@@ -87,22 +80,44 @@ public class SettingsPanel extends JPanel {
 	
 	// VARIABLES //
 	
-	private LocationItem[] locList = {
+	private LocationItem[] locationList = {
 		new LocationItem("en_US", new Locale("en", "US")),
 		new LocationItem("es_ES", new Locale("es", "ES")),
 		new LocationItem("fr_FR", new Locale("fr", "FR"))
 	};
-	
-	private LookAndFeelItem[] lafList = {
+	private LookAndFeelItem[] lookAndFeelList = {
 		new LookAndFeelItem("Metal", "javax.swing.plaf.metal.MetalLookAndFeel"),
 		new LookAndFeelItem("Nimbus", "javax.swing.plaf.nimbus.NimbusLookAndFeel"),
 		new LookAndFeelItem("Motif", "com.sun.java.swing.plaf.motif.MotifLookAndFeel"),
 		new LookAndFeelItem("GTK", "com.sun.java.swing.plaf.gtk.GTKLookAndFeel")
-	};
+	};	
 	
 	// UI COMPONENTS //
 	
 	Gui gui = null;
+	
+	JPanel jpanel_top = new JPanel();
+	JPanel jpanel_center = new JPanel();
+	JPanel jpanel_setting_location = new JPanel();
+	JPanel jpanel_setting_lookandfeel = new JPanel();
+	JPanel jpanel_bottom = new JPanel();
+	JPanel[] jpanel_gridbag = {
+		/* need one JPanel for each use. If you used the same JPanel more times,
+		 * last iteration would override the previous ones.
+		 */
+		new JPanel(),
+		new JPanel()
+	};
+	
+	JLabel jlabel_page_title = new JLabel();
+	JLabel jlabel_setting_location = new JLabel();
+	JLabel jlabel_setting_lookandfeel = new JLabel();
+	
+	JButton jbuton_back = new JButton();
+	JButton jbuton_save = new JButton();
+	
+	JComboBox<LocationItem> jcombo_setting_location = new JComboBox<LocationItem>();
+	JComboBox<LookAndFeelItem> jcombo_setting_lookandfeel = new JComboBox<LookAndFeelItem>();
 	
 	// CONSTRUCTOR //
 	
@@ -111,11 +126,11 @@ public class SettingsPanel extends JPanel {
 		this.gui = gui;
 		
 		// set variables
-		for (LocationItem locitem : locList) {
+		for (LocationItem locitem : locationList) {
 			String name = locitem.getId();
 			locitem.setName(gui.getMessages().getString(name));
 		}
-		for (LookAndFeelItem lafitem : lafList) {
+		for (LookAndFeelItem lafitem : lookAndFeelList) {
 			String name = lafitem.getId();
 			lafitem.setName(name);
 		}
@@ -130,115 +145,73 @@ public class SettingsPanel extends JPanel {
 	// METHOD BUILD SETTINGS MENU //
 	
 	private void buildup() {
-		// set JPanel properties
+		// set main panel layout
 		this.setLayout(new BorderLayout());
 		
-		// declare variables
-		Dimension[] settingComboSize = {
-			new Dimension(150, 30),	// minimum size
-			new Dimension(150, 30),	// preferred size
-			new Dimension(300, 60)	// maximum size
-		};
-		Dimension[] optionBtnSize = {
-			new Dimension(100, 50),
-			new Dimension(100, 50),
-			new Dimension(100, 50)
-		};
-		GridBagConstraints gbcCenter = new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
-		
-		// declare panels
-		JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		JPanel centerPanel = new JPanel(new GridLayout(1, 2));
-		JPanel bottomPanel = new JPanel(new GridLayout(1, 1));
-		
-		// top
-		// set properties
-		/* or not */
-		// set components
-		JLabel title = new JLabel(gui.getMessages().getString("settingsTitle"));
-		title.setFont(title.getFont().deriveFont(24.0f));
-		title.setBorder(new EmptyBorder(20, 20, 20, 20));
+		// jpanel_top
+		// set panel properties
+		jpanel_top.setLayout(new FlowLayout(FlowLayout.CENTER));
+		// set component properties
+		jlabel_page_title.setText(gui.getMessages().getString("settings_Title"));
+		jlabel_page_title.setFont(jlabel_page_title.getFont().deriveFont(24.0f));
+		jlabel_page_title.setBorder(new EmptyBorder(20, 20, 20, 20));
 		//add components
-		topPanel.add(title);
+		jpanel_top.add(jlabel_page_title);
 		
-		// center
-		// set properties
-		/* or not */
-		// set components
-		JPanel[] settingPanelList = {
-			new JPanel(),
-			new JPanel()
-		};
-		JLabel[] settingLabelList = {
-			new JLabel(gui.getMessages().getString("languageLabel")),
-			new JLabel(gui.getMessages().getString("lookandfeelLabel"))
-		};
-		List<JComboBox<? extends Item>> settingComboList = Arrays.asList(
-			new JComboBox<LocationItem>(locList),
-			new JComboBox<LookAndFeelItem>(lafList)
-		);
-		// add components
-		for (int i = 0 ; i < 2; i++) {
-			// set vertical layout
-			settingPanelList[i].setLayout(
-				new BoxLayout(settingPanelList[i], BoxLayout.Y_AXIS)
-			);
-			// add JLabel
-			settingLabelList[i].setFont(settingLabelList[i].getFont().deriveFont(18.0f));
-			settingLabelList[i].setMinimumSize(settingComboSize[0]);
-			settingLabelList[i].setPreferredSize(settingComboSize[1]);
-			settingLabelList[i].setMaximumSize(settingComboSize[2]);
-			settingPanelList[i].add(settingLabelList[i]);
-			// add some spacer
-			JPanel spacer = new JPanel();
-			spacer.setPreferredSize(new Dimension(100, 10));
-			settingPanelList[i].add(spacer);
-			// add JComboBox
-			settingComboList.get(i).setMinimumSize(settingComboSize[0]);
-			settingComboList.get(i).setPreferredSize(settingComboSize[1]);
-			settingComboList.get(i).setMaximumSize(settingComboSize[2]);
-			settingPanelList[i].add(settingComboList.get(i));
-			// pack within centered JPanel
-			JPanel pan = new JPanel(new FlowLayout(FlowLayout.CENTER));
-			pan.add(settingPanelList[i]);
-			centerPanel.add(pan);
+		// jpanel_center
+		// set panel properties
+		jpanel_center.setLayout(new GridLayout(1, 2));
+		jpanel_setting_location.setLayout(new BoxLayout(jpanel_setting_location, BoxLayout.Y_AXIS));
+		jpanel_setting_lookandfeel.setLayout(new BoxLayout(jpanel_setting_lookandfeel, BoxLayout.Y_AXIS));
+		// set component properties
+		jlabel_setting_location.setText(gui.getMessages().getString("language_Label"));
+		gui.setJLabelSize(jlabel_setting_location, gui.getComboBoxSize());
+		jlabel_setting_lookandfeel.setText(gui.getMessages().getString("lookandfeel_Label"));
+		gui.setJLabelSize(jlabel_setting_lookandfeel, gui.getComboBoxSize());
+		for (LocationItem locitem : locationList) {
+			jcombo_setting_location.addItem(locitem);
 		}
+		for (LookAndFeelItem lafitem : lookAndFeelList) {
+			jcombo_setting_lookandfeel.addItem(lafitem);
+		}
+		// add components
+		buildJComboPanel(jpanel_setting_location, jlabel_setting_location, jcombo_setting_location);
+		buildJComboPanel(jpanel_setting_lookandfeel, jlabel_setting_lookandfeel, jcombo_setting_lookandfeel);
 		// manually set each initially selected item
-		settingComboList.get(0).setSelectedItem(initialLocale());
-		settingComboList.get(1).setSelectedItem(initialLookAndFeel());
+		jcombo_setting_location.setSelectedItem(initialLanguage());
+		jcombo_setting_lookandfeel.setSelectedItem(initialLookAndFeel());
 
 		// bottom
-		// set properties
-		bottomPanel.setPreferredSize(new Dimension(100, 100));
-		// set components
-		JButton[] optionButtonList = {
-			new JButton(gui.getMessages().getString("back")),
-			new JButton(gui.getMessages().getString("save"))
-		};
-		for (JButton btn : optionButtonList) {
-			btn.setMinimumSize(optionBtnSize[0]);
-			btn.setPreferredSize(optionBtnSize[1]);
-			btn.setMaximumSize(optionBtnSize[2]);
-		}
+		// set panel properties
+		jpanel_bottom.setLayout(new GridLayout(1, 1));
+		jpanel_bottom.setPreferredSize(new Dimension(100, 100));
+		jpanel_gridbag[0].setLayout(new GridBagLayout());
+		jpanel_gridbag[1].setLayout(new GridBagLayout());
+		// set component properties
+		jbuton_back.setText(gui.getMessages().getString("back_Buton"));
+		gui.setJButtonSize(jbuton_back, gui.getNormalButtonSize());
+		jbuton_save.setText(gui.getMessages().getString("save_Buton"));
+		gui.setJButtonSize(jbuton_save, gui.getNormalButtonSize());
 		// add events
-		optionButtonList[0].addActionListener(event -> {
-			backToMenuPopUp();
+		jbuton_back.addActionListener(event -> {
+			gui.readSettings();
+			gui.mockup(new MenuPanel(gui));
 		});
-		optionButtonList[1].addActionListener(event -> {
-			saveDataPopUp();
+		jbuton_save.addActionListener(event -> {
+			gui.writeSettings();
+			gui.mockup(new MenuPanel(gui));
 		});
 		// add components
-		for (JButton btn : optionButtonList) {
-			JPanel pan = new JPanel(new GridBagLayout());
-			pan.add(btn, gbcCenter);
-			bottomPanel.add(pan);
-		}
+		jpanel_gridbag[0].add(jbuton_back, gui.getGridBagConstraintsCentered());
+		jpanel_bottom.add(jpanel_gridbag[0]);
+		jpanel_gridbag[1].add(jbuton_save, gui.getGridBagConstraintsCentered());
+		jpanel_bottom.add(jpanel_gridbag[1]);
 		
 		// add action listeners at the very end to ensure every UI component is recognized
-		settingComboList.get(0).addActionListener(
+		jcombo_setting_location.addActionListener(
 			event -> {
 				// set Locale
-				LocationItem loci = (LocationItem) settingComboList.get(0).getSelectedItem();
+				LocationItem loci = (LocationItem) jcombo_setting_location.getSelectedItem();
 				gui.setLocale(loci.getLocale());
 				// manually update all texts
 				/* This might look unskilled, but listen for a moment:
@@ -247,75 +220,96 @@ public class SettingsPanel extends JPanel {
 				 * to manually update all texts as this JPanel happens to have few.
 				 * Also, I don't master the 'ResourceBundle' class :(
 				 */
-				title.setText(gui.getMessages().getString("settingsTitle"));
-				for (LocationItem locitem : locList) {
+				jlabel_page_title.setText(gui.getMessages().getString("settings_Title"));
+				for (LocationItem locitem : locationList) {
 					String name = locitem.getId();
 					locitem.setName(gui.getMessages().getString(name));
 				}
-				for (LookAndFeelItem lafitem : lafList) {
+				for (LookAndFeelItem lafitem : lookAndFeelList) {
 					String name = lafitem.getId();
 					lafitem.setName(name);
 				}
-				settingLabelList[0].setText(gui.getMessages().getString("languageLabel"));
-				settingLabelList[1].setText(gui.getMessages().getString("lookandfeelLabel"));
-				optionButtonList[0].setText(gui.getMessages().getString("back"));
-				optionButtonList[1].setText(gui.getMessages().getString("save"));
+				jlabel_setting_location.setText(gui.getMessages().getString("language_Label"));
+				jlabel_setting_lookandfeel.setText(gui.getMessages().getString("lookandfeel_Label"));
+				jbuton_back.setText(gui.getMessages().getString("back_Buton"));
+				jbuton_save.setText(gui.getMessages().getString("save_Buton"));
 			}
 		);
-		settingComboList.get(1).addActionListener(
+		jcombo_setting_lookandfeel.addActionListener(
 			event -> {
 				// set LookAndFeel
-				LookAndFeelItem lafi = (LookAndFeelItem) settingComboList.get(1).getSelectedItem();
+				LookAndFeelItem lafi = (LookAndFeelItem) jcombo_setting_lookandfeel.getSelectedItem();
 				gui.setLookAndFeel(lafi.getLookAndFeel());
 			}
 		);
 		
 		// add panels to container
-		this.add(topPanel, BorderLayout.NORTH);
-		this.add(centerPanel, BorderLayout.CENTER);
-		this.add(bottomPanel, BorderLayout.SOUTH);
+		this.add(jpanel_top, BorderLayout.NORTH);
+		this.add(jpanel_center, BorderLayout.CENTER);
+		this.add(jpanel_bottom, BorderLayout.SOUTH);
 	}
 	
-	// METHOD GET INITIAL LOCALE FROM LOCLIST //
+	// METHOD BUILD SETTING PANEL SEPARATELY //
 	
-	private LocationItem initialLocale() {
+	private void buildJComboPanel (JPanel panel, JLabel label, JComboBox<? extends Item> combo) {
+		// initialize custom JPanels
+		JPanel spacer = new JPanel();
+		JPanel centered = new JPanel();
+		
+		// set custom JPanels properties
+		Dimension[] spacerSize = {
+			new Dimension(100, 10),
+			new Dimension(100, 10),
+			new Dimension(100, 10)
+		};
+		gui.setJPanelSize(
+			spacer,
+			spacerSize
+		);
+		centered.setLayout(new FlowLayout(FlowLayout.CENTER));
+		
+		// set component properties
+		label.setFont(label.getFont().deriveFont(18.0f));
+		gui.setJComboBoxSize(combo, gui.getComboBoxSize());
+		
+		// add components to 'panel'
+		panel.add(label);
+		panel.add(spacer);
+		panel.add(combo);
+		
+		// add 'panel' to 'centered'
+		centered.add(panel);
+		
+		// add 'centered' to 'jpanel_center'
+		jpanel_center.add(centered);
+	}
+	
+	// METHOD GET INITIAL LANGUAGE FROM SAVED DATA //
+	
+	private LocationItem initialLanguage() {
 		String name = gui.getLocaleName();
 		switch (name) {
 			case ("es_ES"):
-				return locList[1];
+				return locationList[1];
 			default:
-				return locList[0];
+				return locationList[0];
 		}
 	}
 	
-	// METHOD GET INITIAL LOOKANDFEEL FROM LAFLIST //
+	// METHOD GET INITIAL LOOKANDFEEL FROM SAVED DATA //
 	
 	private LookAndFeelItem initialLookAndFeel() {
 		String name = gui.getLookAndFeelName();
 		switch (name) {
 			case ("Nimbus"):
-				return lafList[1];
+				return lookAndFeelList[1];
 			case ("Motif"):
-				return lafList[2];
+				return lookAndFeelList[2];
 			case ("GTK"):
-				return lafList[3];
+				return lookAndFeelList[3];
 			default:
-				return lafList[0];
+				return lookAndFeelList[0];
 		}
-	}
-	
-	// METHOD SAVE DATA //
-	
-	private void saveDataPopUp() {
-		gui.writeSettings();
-		gui.mockup(new MenuPanel(gui));
-	}
-	
-	// METHOD GO BACK //
-	
-	private void backToMenuPopUp() {
-		gui.readSettings();
-		gui.mockup(new MenuPanel(gui));
 	}
 
 }

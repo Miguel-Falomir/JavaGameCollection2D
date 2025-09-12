@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -21,6 +22,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -41,9 +43,40 @@ public class Gui extends JFrame {
 	// VARIABLES //
 	
 	ResourceBundle messages = null;
+	
 	String language = null;
 	String country = null;
 	String lookandfeel = null;
+	
+	Dimension[] normalButtonSize = {
+		new Dimension(100, 50),	// minimum size
+		new Dimension(100, 50),	// preferred size
+		new Dimension(200, 100)	// maximum size
+	};
+	Dimension[] squaredButtonSize = {
+		new Dimension(100, 100),
+		new Dimension(100, 100),
+		new Dimension(200, 200)
+	};
+	Dimension[] comboboxSize = {
+		new Dimension(150, 30),
+		new Dimension(150, 30),
+		new Dimension(300, 60)
+	};
+	
+	GridBagConstraints gridBagConstraintsCentered = new GridBagConstraints(
+		0,							// gridX (fila posicion)
+		0,							// gridY (columna posicion)
+		1,							// gridwidth (cantidad filas ocupadas)
+		1,							// gridheight (cantidad columnas ocupadas)
+		0.0,						// weightX (peso del componente respecto al ancho libre)
+		0.0,						// weightY (peso del componente respecto a la altura disponible)
+		GridBagConstraints.CENTER,	// anchor (lugar de la celda donde colocar el componente, si este es mas pequenyo)
+		GridBagConstraints.NONE,	// fill (metodo para reescalar el componente, si este es mas pequenyo que la celda)
+		new Insets(0, 0, 0, 0),		// insets (margenes externos para dejar espacio libre fuera de la celda)
+		0,							// ipadX (margen interno respecto al eje X, espacio libre dentro de la celda)
+		0							// ipadY (margen interno respecto al eje Y, espacio libre dentro de la celda)
+	);
 	
 	// UI COMPONENTS //
 	
@@ -99,6 +132,22 @@ public class Gui extends JFrame {
 		return messages;
 	}
 	
+	public Dimension[] getNormalButtonSize() {
+		return normalButtonSize;
+	}
+	
+	public Dimension[] getSquaredButtonSize() {
+		return squaredButtonSize;
+	}
+	
+	public Dimension[] getComboBoxSize() {
+		return comboboxSize;
+	}
+	
+	public GridBagConstraints getGridBagConstraintsCentered() {
+		return gridBagConstraintsCentered;
+	}
+	
 	// CONSTRUCTOR //
 	
 	public Gui (String title, String iconRoute, int width, int height, boolean resizable) throws HeadlessException {
@@ -148,126 +197,7 @@ public class Gui extends JFrame {
 		this.setVisible(true);
 	}
 	
-	// METHOD BUILD MAIN MENU //
-	
-	public void mockup () {
-		// clear container
-		cont.removeAll();
-		
-		// declare variables
-		Dimension[] gameBtnSize = {
-			new Dimension(100, 100),
-			new Dimension(100, 100),
-			new Dimension(200, 200)
-		};
-		Dimension[] optionBtnSize = {
-			new Dimension(100, 50),
-			new Dimension(100, 50),
-			new Dimension(100, 50)
-		};
-		GridBagConstraints gbcCenter = new GridBagConstraints(
-			0,							// gridX (fila posicion)
-			0,							// gridY (columna posicion)
-			1,							// gridwidth (cantidad filas ocupadas)
-			1,							// gridheight (cantidad columnas ocupadas)
-			0.0,						// weightX (peso del componente respecto al ancho libre)
-			0.0,						// weightY (peso del componente respecto a la altura disponible)
-			GridBagConstraints.CENTER,	// anchor (lugar de la celda donde colocar el componente, si este es mas pequenyo)
-			GridBagConstraints.NONE,	// fill (metodo para reescalar el componente, si este es mas pequenyo que la celda)
-			new Insets(0, 0, 0, 0),		// insets (margenes externos para dejar espacio libre fuera de la celda)
-			0,							// ipadX (margen interno respecto al eje X, espacio libre dentro de la celda)
-			0							// ipadY (margen interno respecto al eje Y, espacio libre dentro de la celda)
-		);
-		
-		// declare panels
-		JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		JPanel centerPanel = new JPanel(new GridLayout(2, 4));
-		JPanel bottomPanel = new JPanel(new GridLayout(1, 2));
-		
-		// top
-		// set properties
-		//topPanel.setBackground(Color.RED);
-		// set components
-		JLabel title = new JLabel(messages.getString("mainTitle"));
-		title.setFont(title.getFont().deriveFont(24.0f));
-		title.setBorder( new EmptyBorder(20, 20, 20, 20));
-		//add components
-		topPanel.add(title);
-		
-		// center
-		// set properties
-		
-		// set components
-		JButton[] gameButtonList = {
-			new JButton("Solitaire"),
-			new JButton("Game of life"),
-			new JButton("Snake"),
-			new JButton("Pong"),
-			new JButton("Breakout"),
-			new JButton("Invaders"),
-			new JButton("Tetris"),
-			new JButton("Pacman")
-		};
-		for (JButton btn : gameButtonList) {
-			btn.setMinimumSize(gameBtnSize[0]);
-			btn.setPreferredSize(gameBtnSize[1]);
-			btn.setMaximumSize(gameBtnSize[2]);
-		}
-		// add components
-		for (JButton btn : gameButtonList) {
-			JPanel pan = new JPanel( new GridBagLayout());
-			pan.add(btn, gbcCenter);
-			centerPanel.add(pan);
-		}
-		
-		// bottom
-		// set properties
-		//bottomPanel.setBackground(Color.GREEN);
-		bottomPanel.setPreferredSize(new Dimension(100, 100));
-		// set components
-		JButton[] optionButtonList = {
-			new JButton(messages.getString("settings")),
-			new JButton(messages.getString("quit"))
-		};
-		for (JButton btn : optionButtonList) {
-			btn.setMinimumSize(optionBtnSize[0]);
-			btn.setPreferredSize(optionBtnSize[1]);
-			btn.setMaximumSize(optionBtnSize[2]);
-		}
-		// disable settings button until better implementation
-		optionButtonList[0].setEnabled(true);
-		// add events
-		optionButtonList[0].addActionListener( event -> {
-			//new SettingsPanel(this, messages, settings);
-			System.out.println("not implemented due to bad design");
-		});
-		optionButtonList[1].addActionListener( event -> {
-			setVisible(false);
-    		dispose();
-    		SwingUtilities.invokeLater(new Runnable() {
-    			public void run() {
-    				System.exit(0);
-    			}
-    		});
-		});
-		// add components
-		for (JButton btn : optionButtonList) {
-			JPanel pan = new JPanel( new GridBagLayout());
-			pan.add(btn, gbcCenter);
-			bottomPanel.add(pan);
-		}
-		
-		// add panels to container
-		cont.add(topPanel, BorderLayout.NORTH);
-		cont.add(centerPanel, BorderLayout.CENTER);
-		cont.add(bottomPanel, BorderLayout.SOUTH);
-		
-		// refresh container
-		cont.revalidate();
-		cont.repaint();
-	}
-	
-	// METHOD CHANGE MAIN PANEL //
+	// METHOD BUILD NEW PANEL //
 	
 	public void mockup (JPanel panel) {
 		// clear container
@@ -279,6 +209,94 @@ public class Gui extends JFrame {
 		// refresh container
 		cont.revalidate();
 		cont.repaint();
+	}
+	
+	// METHOD SET JPANEL SIZE //
+	
+	public void setJPanelSize(JPanel panel, Dimension[] dim) {
+		switch (dim.length) {
+			case 1:
+				panel.setPreferredSize(dim[0]);
+				break;
+			case 2:
+				panel.setMinimumSize(dim[0]);
+				panel.setPreferredSize(dim[1]);
+				break;
+			case 3:
+				panel.setMinimumSize(dim[0]);
+				panel.setPreferredSize(dim[1]);
+				panel.setMaximumSize(dim[2]);
+				break;
+			default:
+				System.out.println("No size can be applied.\nMake sure that the Dimension array has [1 - 3] objects.");
+				break;
+		}
+	}
+	
+	// METHOD SET JLABEL SIZE //
+	
+	public void setJLabelSize(JLabel label, Dimension[] dim) {
+		switch (dim.length) {
+			case 1:
+				label.setPreferredSize(dim[0]);
+				break;
+			case 2:
+				label.setMinimumSize(dim[0]);
+				label.setPreferredSize(dim[1]);
+				break;
+			case 3:
+				label.setMinimumSize(dim[0]);
+				label.setPreferredSize(dim[1]);
+				label.setMaximumSize(dim[2]);
+				break;
+			default:
+				System.out.println("No size can be applied.\nMake sure that the Dimension array has [1 - 3] objects.");
+				break;
+		}
+	}
+	
+	// METHOD SET JBUTTON SIZE //
+	
+	public void setJButtonSize(JButton buton, Dimension[] dim) {
+		switch (dim.length) {
+			case 1:
+				buton.setPreferredSize(dim[0]);
+				break;
+			case 2:
+				buton.setMinimumSize(dim[0]);
+				buton.setPreferredSize(dim[1]);
+				break;
+			case 3:
+				buton.setMinimumSize(dim[0]);
+				buton.setPreferredSize(dim[1]);
+				buton.setMaximumSize(dim[2]);
+				break;
+			default:
+				System.out.println("No size can be applied.\nMake sure that the Dimension array has [1 - 3] objects.");
+				break;
+		}
+	}
+	
+	// METHOD SET JCOMBOBOX SIZE //
+	
+	public void setJComboBoxSize (JComboBox<? extends Object> combo, Dimension[] dim) {
+		switch (dim.length) {
+			case 1:
+				combo.setPreferredSize(dim[0]);
+				break;
+			case 2:
+				combo.setMinimumSize(dim[0]);
+				combo.setPreferredSize(dim[1]);
+				break;
+			case 3:
+				combo.setMinimumSize(dim[0]);
+				combo.setPreferredSize(dim[1]);
+				combo.setMaximumSize(dim[2]);
+				break;
+			default:
+				System.out.println("No size can be applied.\nMake sure that the Dimension array has [1 - 3] objects.");
+				break;
+		}
 	}
 	
 	// METHOD UPDATE UI //
@@ -294,7 +312,7 @@ public class Gui extends JFrame {
 		}
 	}
 	
-	// METHOD READ SETTINGS FILE
+	// METHOD READ USER SETTINGS //
 	
 	public void readSettings() {
 		try {
@@ -326,7 +344,7 @@ public class Gui extends JFrame {
 		}
 	}
 	
-	// METHOD WRITE SETTINGS FILE
+	// METHOD WRITE USER SETTINGS //
 	
 	public void writeSettings() {
 		try {
