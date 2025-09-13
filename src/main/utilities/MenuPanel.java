@@ -1,4 +1,4 @@
-package main.jpanels;
+package main.utilities;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -63,8 +63,8 @@ public class MenuPanel extends JPanel {
 		this.gui = gui;
 		
 		// set variables
-		gameButtonSize = gui.getSquaredButtonSize();
-		optionButtonSize = gui.getNormalButtonSize();
+		gameButtonSize = gui.getStandardSize(5);
+		optionButtonSize = gui.getStandardSize(4);
 		gbcCentered = gui.getGridBagConstraintsCentered();
 		
 		// build-up JPanel components

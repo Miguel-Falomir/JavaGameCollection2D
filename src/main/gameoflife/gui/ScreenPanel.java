@@ -25,7 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import main.Gui;
-import main.jpanels.MenuPanel;
+import main.utilities.MenuPanel;
 
 public class ScreenPanel extends JPanel {
 	
@@ -53,9 +53,9 @@ public class ScreenPanel extends JPanel {
 		this.gui = gui;
 		
 		// set variables
-		buttonSize = gui.getNormalButtonSize();
-		miniButtonSize = gui.getMiniButtonSize();
-		optionCenterSize = gui.getOptionsPanelSize();
+		buttonSize = gui.getStandardSize(4);
+		miniButtonSize = gui.getStandardSize(6);
+		optionCenterSize = gui.getStandardSize(1);
 		optionSize = Arrays.asList(
 			new Dimension(250, 250),
 			new Dimension(250, 250),

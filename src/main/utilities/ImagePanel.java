@@ -1,4 +1,4 @@
-package main.jpanels;
+package main.utilities;
 
 import java.awt.Dimension;
 import java.awt.Graphics;

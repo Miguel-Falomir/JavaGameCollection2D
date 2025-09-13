@@ -1,4 +1,4 @@
-package main.jpanels;
+package main.utilities;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -26,12 +26,8 @@ public class SettingsPanel extends JPanel {
 	
 	// CUSTOM CLASSES FOR COMBOBOX ITEMS //
 	
-	private class Item {}
-	
 	private class LocationItem extends Item {
 		// attributes
-		private String id;
-		private String name;
 		private Locale locale;
 		
 		// getters and setters
@@ -44,38 +40,21 @@ public class SettingsPanel extends JPanel {
 			this.id = id;
 			this.locale = locale;
 		}
-		
-		// override method 'toString'
-		@Override
-		public String toString() {
-			return name;
-		}
 	}
 	
 	private class LookAndFeelItem extends Item {
 		// attributes
-		private String id;
-		private String name;
 		private String lookAndFeel;
 		
 		// getters and setters
 		public String getId() {return id;}
-		//public void setId(String id) {this.id = id;}
-		//public String getName() {return name;}
 		public void setName(String name) {this.name = name;}
 		public String getLookAndFeel() {return lookAndFeel;}
-		//public void setLookAndFeel(String lookAndFeel) {this.lookAndFeel = lookAndFeel;}
 		
 		// constructor
 		public LookAndFeelItem (String id, String lookAndFeel) {
 			this.id = id;
 			this.lookAndFeel = lookAndFeel;
-		}
-		
-		// override method 'toString'
-		@Override
-		public String toString() {
-			return name;
 		}
 	}
 	
@@ -142,9 +121,9 @@ public class SettingsPanel extends JPanel {
 		}
 		
 		// set component sizes
-		labelSize = gui.getComboBoxSize();
-		buttonSize = gui.getNormalButtonSize();
-		comboboxSize = gui.getComboBoxSize();
+		labelSize = gui.getStandardSize(7);
+		buttonSize = gui.getStandardSize(4);
+		comboboxSize = gui.getStandardSize(7);
 		
 		// build-up JPanel components
 		this.buildup();
@@ -205,7 +184,12 @@ public class SettingsPanel extends JPanel {
 		// bottom
 		// set panel properties
 		jpanel_bottom.setLayout(new GridLayout(1, 1));
-		jpanel_bottom.setPreferredSize(new Dimension(100, 100));
+		gui.setComponentSize(
+			jpanel_bottom,
+			null,
+			new Dimension(100, 100),
+			null
+		);
 		jpanel_gridbag[0].setLayout(new GridBagLayout());
 		jpanel_gridbag[1].setLayout(new GridBagLayout());
 		// set component properties

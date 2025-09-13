@@ -35,7 +35,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
-import main.jpanels.MenuPanel;
+import main.utilities.MenuPanel;
 
 public class Gui extends JFrame {
 	
@@ -51,6 +51,21 @@ public class Gui extends JFrame {
 	String country = null;
 	String lookandfeel = null;
 	
+	List<Dimension> optionsPanelSize = Arrays.asList(
+		new Dimension(300, 300),
+		new Dimension(300, 300),
+		new Dimension(300, 300)
+	);
+	List<Dimension> squaredPanelSize = Arrays.asList(
+		new Dimension(480, 480),
+		new Dimension(480, 480),
+		new Dimension(480, 480)
+	);
+	List<Dimension> panoramicPanelSize = Arrays.asList(
+		new Dimension(560, 420),
+		new Dimension(560, 420),
+		new Dimension(560, 420)
+	);
 	List<Dimension> normalButtonSize = Arrays.asList(
 		new Dimension(100, 50),	// minimum size
 		new Dimension(100, 50),	// preferred size
@@ -65,11 +80,6 @@ public class Gui extends JFrame {
 		new Dimension(50, 20),
 		new Dimension(50, 20),
 		new Dimension(50, 20)
-	);
-	List<Dimension> optionsPanelSize = Arrays.asList(
-		new Dimension(300, 300),
-		new Dimension(300, 300),
-		new Dimension(300, 300)
 	);
 	List<Dimension> comboboxSize = Arrays.asList(
 		new Dimension(150, 30),
@@ -143,6 +153,27 @@ public class Gui extends JFrame {
 	
 	public ResourceBundle getMessages() {
 		return messages;
+	}
+	
+	public List<Dimension> getStandardSize(int index) {
+		switch (index) {
+			case 1: 
+				return optionsPanelSize;
+			case 2:
+				return squaredPanelSize;
+			case 3:
+				return panoramicPanelSize;
+			case 4:
+				return normalButtonSize;
+			case 5:
+				return squaredButtonSize;
+			case 6:
+				return miniButtonSize;
+			case 7:
+				return comboboxSize;
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + index);
+		}
 	}
 	
 	public List<Dimension> getNormalButtonSize() {
