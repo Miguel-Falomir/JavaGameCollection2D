@@ -1,11 +1,12 @@
 package main.jpanels;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.swing.BoxLayout;
@@ -90,7 +91,11 @@ public class SettingsPanel extends JPanel {
 		new LookAndFeelItem("Nimbus", "javax.swing.plaf.nimbus.NimbusLookAndFeel"),
 		new LookAndFeelItem("Motif", "com.sun.java.swing.plaf.motif.MotifLookAndFeel"),
 		new LookAndFeelItem("GTK", "com.sun.java.swing.plaf.gtk.GTKLookAndFeel")
-	};	
+	};
+	
+	private List<Dimension> labelSize = new ArrayList<Dimension>();
+	private List<Dimension> buttonSize = new ArrayList<Dimension>();
+	private List<Dimension> comboboxSize = new ArrayList<Dimension>();
 	
 	// UI COMPONENTS //
 	
@@ -102,8 +107,9 @@ public class SettingsPanel extends JPanel {
 	JPanel jpanel_setting_lookandfeel = new JPanel();
 	JPanel jpanel_bottom = new JPanel();
 	JPanel[] jpanel_gridbag = {
-		/* need one JPanel for each use. If you used the same JPanel more times,
-		 * last iteration would override the previous ones.
+		/* needs one JPanel per usage. If you used the same JPanel more times,
+		 * last iteration would override the previous ones, thus showing only
+		 * one of N components.
 		 */
 		new JPanel(),
 		new JPanel()
@@ -125,7 +131,7 @@ public class SettingsPanel extends JPanel {
 		// set ui components
 		this.gui = gui;
 		
-		// set variables
+		// add translated names to each item
 		for (LocationItem locitem : locationList) {
 			String name = locitem.getId();
 			locitem.setName(gui.getMessages().getString(name));
@@ -134,6 +140,11 @@ public class SettingsPanel extends JPanel {
 			String name = lafitem.getId();
 			lafitem.setName(name);
 		}
+		
+		// set component sizes
+		labelSize = gui.getComboBoxSize();
+		buttonSize = gui.getNormalButtonSize();
+		comboboxSize = gui.getComboBoxSize();
 		
 		// build-up JPanel components
 		this.buildup();
@@ -165,9 +176,19 @@ public class SettingsPanel extends JPanel {
 		jpanel_setting_lookandfeel.setLayout(new BoxLayout(jpanel_setting_lookandfeel, BoxLayout.Y_AXIS));
 		// set component properties
 		jlabel_setting_location.setText(gui.getMessages().getString("language_Label"));
-		gui.setJLabelSize(jlabel_setting_location, gui.getComboBoxSize());
+		gui.setComponentSize(
+			jlabel_setting_location,
+			labelSize.get(0),
+			labelSize.get(1),
+			labelSize.get(2)
+		);
 		jlabel_setting_lookandfeel.setText(gui.getMessages().getString("lookandfeel_Label"));
-		gui.setJLabelSize(jlabel_setting_lookandfeel, gui.getComboBoxSize());
+		gui.setComponentSize(
+			jlabel_setting_lookandfeel,
+			labelSize.get(0),
+			labelSize.get(1),
+			labelSize.get(2)
+		);
 		for (LocationItem locitem : locationList) {
 			jcombo_setting_location.addItem(locitem);
 		}
@@ -189,9 +210,19 @@ public class SettingsPanel extends JPanel {
 		jpanel_gridbag[1].setLayout(new GridBagLayout());
 		// set component properties
 		jbuton_back.setText(gui.getMessages().getString("back_Buton"));
-		gui.setJButtonSize(jbuton_back, gui.getNormalButtonSize());
+		gui.setComponentSize(
+			jbuton_back,
+			buttonSize.get(0),
+			buttonSize.get(1),
+			buttonSize.get(2)
+		);
 		jbuton_save.setText(gui.getMessages().getString("save_Buton"));
-		gui.setJButtonSize(jbuton_save, gui.getNormalButtonSize());
+		gui.setComponentSize(
+			jbuton_save,
+			buttonSize.get(0),
+			buttonSize.get(1),
+			buttonSize.get(2)
+		);
 		// add events
 		jbuton_back.addActionListener(event -> {
 			gui.readSettings();
@@ -262,15 +293,22 @@ public class SettingsPanel extends JPanel {
 			new Dimension(100, 10),
 			new Dimension(100, 10)
 		};
-		gui.setJPanelSize(
+		gui.setComponentSize(
 			spacer,
-			spacerSize
+			spacerSize[0],
+			spacerSize[1],
+			spacerSize[2]
 		);
 		centered.setLayout(new FlowLayout(FlowLayout.CENTER));
 		
 		// set component properties
 		label.setFont(label.getFont().deriveFont(18.0f));
-		gui.setJComboBoxSize(combo, gui.getComboBoxSize());
+		gui.setComponentSize(
+			combo,
+			comboboxSize.get(0),
+			comboboxSize.get(1),
+			comboboxSize.get(2)
+		);
 		
 		// add components to 'panel'
 		panel.add(label);

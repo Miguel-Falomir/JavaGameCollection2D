@@ -11,6 +11,9 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -32,30 +35,12 @@ public class ScreenPanel extends JPanel {
 	
 	// VARIABLES //
 	
-	Dimension[] buttonSize = {
-		new Dimension(100, 50),
-		new Dimension(100, 50),
-		new Dimension(100, 50)
-	};
-	Dimension[] miniButtonSize = {
-		new Dimension(50, 20),
-		new Dimension(50, 20),
-		new Dimension(50, 20)
-	};
-	Dimension[] optionCenterSize = {
-		new Dimension(300, 300),
-		new Dimension(300, 300),
-		new Dimension(300, 300)
-	};
-	Dimension[] optionSize = {
-		new Dimension(250, 200)
-	};
-	Dimension[] optionBottomSize = {
-		new Dimension(100, 100),
-		new Dimension(100, 100),
-		new Dimension(100, 100)
-	};
-	GridBagConstraints gbcCenter = new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
+	private List<Dimension> buttonSize = new ArrayList<Dimension>();
+	private List<Dimension> miniButtonSize = new ArrayList<Dimension>();
+	private List<Dimension> optionCenterSize = new ArrayList<Dimension>();
+	private List<Dimension> optionSize = new ArrayList<Dimension>();
+	private List<Dimension> optionBottomSize = new ArrayList<Dimension>();
+	private GridBagConstraints gbcCentered = null;
 	
 	// UI COMPONENTS //
 	
@@ -66,6 +51,18 @@ public class ScreenPanel extends JPanel {
 	public ScreenPanel (Gui gui) {
 		// set ui components
 		this.gui = gui;
+		
+		// set variables
+		buttonSize = gui.getNormalButtonSize();
+		miniButtonSize = gui.getMiniButtonSize();
+		optionCenterSize = gui.getOptionsPanelSize();
+		optionSize = Arrays.asList(
+			new Dimension(250, 250),
+			new Dimension(250, 250),
+			new Dimension(250, 250)
+		);
+		optionBottomSize = gui.getSquaredButtonSize();
+		gbcCentered = gui.getGridBagConstraintsCentered();
 		
 		// build-up JPanel components
 		this.buildup();
@@ -112,20 +109,45 @@ public class ScreenPanel extends JPanel {
 		
 		// set properties of each JButton
 		for (int i = 0; i < buttonList.length; i++) {
-			setComponentSize(buttonList[i], buttonSize);
+			gui.setComponentSize(
+				buttonList[i],
+				buttonSize.get(0),
+				buttonSize.get(1),
+				buttonSize.get(2)
+			);
 			buttonList[i].addActionListener(actionList[i]);
 		}
 		
 		// options (left)
 		// set properties
-		setComponentSize(panelList[0], optionCenterSize);						// [MOP]
+		gui.setComponentSize(	// [MOP]
+			panelList[0],
+			optionCenterSize.get(0),
+			optionCenterSize.get(1),
+			optionCenterSize.get(2)
+		);
 		panelList[0].setBackground(Color.GREEN);
-		setComponentSize(panelList[1], optionCenterSize);						// [COP]
+		gui.setComponentSize(	// [COP]
+			panelList[1],
+			optionCenterSize.get(0),
+			optionCenterSize.get(1),
+			optionCenterSize.get(2)
+		);
 		panelList[1].setOpaque(false);
-		setComponentSize(panelList[2], optionSize);								// [BLO]
+		gui.setComponentSize(	// [BLO]
+			panelList[2],
+			optionSize.get(0),
+			optionSize.get(1),
+			optionSize.get(2)
+		);
 		panelList[2].setLayout(new BoxLayout(panelList[2], BoxLayout.Y_AXIS));
 		panelList[2].setOpaque(false);
-		setComponentSize(panelList[3], optionBottomSize);						// [BOP]
+		gui.setComponentSize(	// [BOP]
+			panelList[3],
+			optionBottomSize.get(0),
+			optionBottomSize.get(1),
+			optionBottomSize.get(2)
+		);
 		panelList[3].setOpaque(false);
 		// add components to [BLO]
 		labelList[0].setFont(labelList[0].getFont().deriveFont(24.0f));
@@ -135,14 +157,14 @@ public class ScreenPanel extends JPanel {
 		// add [BLO] inside [COP]
 		panelList[1].add(panelList[2]);
 		// add components to [BOP]
-		panelList[3].add(buttonList[0], gbcCenter);
+		panelList[3].add(buttonList[0], gbcCentered);
 		// add JPanels to [MOP]
 		panelList[0].add(panelList[1], BorderLayout.CENTER);
 		panelList[0].add(panelList[3], BorderLayout.SOUTH);
 		
 		// game (center)
 		// initialize [DIS] inside [CEN]
-		panelList[4].add(panelList[5], gbcCenter);
+		panelList[4].add(panelList[5], gbcCentered);
 		
 		// add JPanels to [CEN]
 		this.add(panelList[0], BorderLayout.LINE_START);
@@ -196,51 +218,5 @@ public class ScreenPanel extends JPanel {
 		
 		// return main JPanel
 		return panList[0];
-	}
-	
-	// METHOD SET SIZE OF UI COMPONENT //
-	
-	private void setComponentSize(Object obj, Dimension[] dim) {
-		if (obj instanceof JPanel) {
-			JPanel pan = (JPanel) obj;
-			switch (dim.length) {
-			case 1:
-				pan.setPreferredSize(dim[0]);
-				break;
-			case 2:
-				pan.setMinimumSize(dim[0]);
-				pan.setPreferredSize(dim[1]);
-				break;
-			case 3:
-				pan.setMinimumSize(dim[0]);
-				pan.setPreferredSize(dim[1]);
-				pan.setMaximumSize(dim[2]);
-				break;
-			default:
-				System.out.println("No size can be applied.\nMake sure that the Dimension array has [1 - 3] objects.");
-				break;
-			}
-		} else if (obj instanceof JButton) {
-			JButton btn = (JButton) obj;
-			switch (dim.length) {
-			case 1:
-				btn.setPreferredSize(dim[0]);
-				break;
-			case 2:
-				btn.setMinimumSize(dim[0]);
-				btn.setPreferredSize(dim[1]);
-				break;
-			case 3:
-				btn.setMinimumSize(dim[0]);
-				btn.setPreferredSize(dim[1]);
-				btn.setMaximumSize(dim[2]);
-				break;
-			default:
-				System.out.println("No size can be applied.\nMake sure that the Dimension array has [1 - 3] objects.");
-				break;
-			}
-		} else {
-			System.out.println("This object is untreatable. Please enter a JPanel or JButton component.");
-		}
 	}
 }

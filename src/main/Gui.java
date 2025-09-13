@@ -14,6 +14,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -48,21 +51,31 @@ public class Gui extends JFrame {
 	String country = null;
 	String lookandfeel = null;
 	
-	Dimension[] normalButtonSize = {
+	List<Dimension> normalButtonSize = Arrays.asList(
 		new Dimension(100, 50),	// minimum size
 		new Dimension(100, 50),	// preferred size
 		new Dimension(200, 100)	// maximum size
-	};
-	Dimension[] squaredButtonSize = {
+	);
+	List<Dimension> squaredButtonSize = Arrays.asList(
 		new Dimension(100, 100),
 		new Dimension(100, 100),
 		new Dimension(200, 200)
-	};
-	Dimension[] comboboxSize = {
+	);
+	List<Dimension> miniButtonSize = Arrays.asList(
+		new Dimension(50, 20),
+		new Dimension(50, 20),
+		new Dimension(50, 20)
+	);
+	List<Dimension> optionsPanelSize = Arrays.asList(
+		new Dimension(300, 300),
+		new Dimension(300, 300),
+		new Dimension(300, 300)
+	);
+	List<Dimension> comboboxSize = Arrays.asList(
 		new Dimension(150, 30),
 		new Dimension(150, 30),
 		new Dimension(300, 60)
-	};
+	);
 	
 	GridBagConstraints gridBagConstraintsCentered = new GridBagConstraints(
 		0,							// gridX (fila posicion)
@@ -132,15 +145,23 @@ public class Gui extends JFrame {
 		return messages;
 	}
 	
-	public Dimension[] getNormalButtonSize() {
+	public List<Dimension> getNormalButtonSize() {
 		return normalButtonSize;
 	}
 	
-	public Dimension[] getSquaredButtonSize() {
+	public List<Dimension> getSquaredButtonSize() {
 		return squaredButtonSize;
 	}
 	
-	public Dimension[] getComboBoxSize() {
+	public List<Dimension> getMiniButtonSize() {
+		return miniButtonSize;
+	}
+	
+	public List<Dimension> getOptionsPanelSize() {
+		return optionsPanelSize;
+	}
+	
+	public List<Dimension> getComboBoxSize() {
 		return comboboxSize;
 	}
 	
@@ -211,92 +232,48 @@ public class Gui extends JFrame {
 		cont.repaint();
 	}
 	
-	// METHOD SET JPANEL SIZE //
+	// METHOD(S) SET COMPONENT SIZE //
 	
-	public void setJPanelSize(JPanel panel, Dimension[] dim) {
-		switch (dim.length) {
-			case 1:
-				panel.setPreferredSize(dim[0]);
-				break;
-			case 2:
-				panel.setMinimumSize(dim[0]);
-				panel.setPreferredSize(dim[1]);
-				break;
-			case 3:
-				panel.setMinimumSize(dim[0]);
-				panel.setPreferredSize(dim[1]);
-				panel.setMaximumSize(dim[2]);
-				break;
-			default:
-				System.out.println("No size can be applied.\nMake sure that the Dimension array has [1 - 3] objects.");
-				break;
+	public void setComponentSize(Object obj, Dimension minimum, Dimension preferred, Dimension maximum) {
+		if (obj instanceof JPanel) {			// JPanel
+			JPanel panel = (JPanel) obj;
+			setJPanelSize(panel, minimum, preferred, maximum);
+		} else if (obj instanceof JLabel) {		// JLabel
+			JLabel label = (JLabel) obj;
+			setJLabelSize(label, minimum, preferred, maximum);
+		} else if (obj instanceof JButton) {	// JButton
+			JButton buton = (JButton) obj;
+			setJButtonSize(buton, minimum, preferred, maximum);			
+		} else if (obj instanceof JComboBox) {	// JComboBox
+			JComboBox<? extends Object> combo = (JComboBox<? extends Object>) obj;
+			setJComboBoxSize(combo, minimum, preferred, maximum);
+		} else {
+			System.out.println("Class not valid");
 		}
 	}
 	
-	// METHOD SET JLABEL SIZE //
-	
-	public void setJLabelSize(JLabel label, Dimension[] dim) {
-		switch (dim.length) {
-			case 1:
-				label.setPreferredSize(dim[0]);
-				break;
-			case 2:
-				label.setMinimumSize(dim[0]);
-				label.setPreferredSize(dim[1]);
-				break;
-			case 3:
-				label.setMinimumSize(dim[0]);
-				label.setPreferredSize(dim[1]);
-				label.setMaximumSize(dim[2]);
-				break;
-			default:
-				System.out.println("No size can be applied.\nMake sure that the Dimension array has [1 - 3] objects.");
-				break;
-		}
+	private void setJPanelSize(JPanel panel, Dimension minimum, Dimension preferred, Dimension maximum) {
+		if (minimum != null) {panel.setMinimumSize(minimum);}
+		if (preferred != null) {panel.setPreferredSize(preferred);}
+		if (maximum != null) {panel.setMaximumSize(maximum);}
 	}
 	
-	// METHOD SET JBUTTON SIZE //
-	
-	public void setJButtonSize(JButton buton, Dimension[] dim) {
-		switch (dim.length) {
-			case 1:
-				buton.setPreferredSize(dim[0]);
-				break;
-			case 2:
-				buton.setMinimumSize(dim[0]);
-				buton.setPreferredSize(dim[1]);
-				break;
-			case 3:
-				buton.setMinimumSize(dim[0]);
-				buton.setPreferredSize(dim[1]);
-				buton.setMaximumSize(dim[2]);
-				break;
-			default:
-				System.out.println("No size can be applied.\nMake sure that the Dimension array has [1 - 3] objects.");
-				break;
-		}
+	private void setJLabelSize(JLabel label, Dimension minimum, Dimension preferred, Dimension maximum) {
+		if (minimum != null) {label.setMinimumSize(minimum);}
+		if (preferred != null) {label.setPreferredSize(preferred);}
+		if (maximum != null) {label.setMaximumSize(maximum);}
 	}
 	
-	// METHOD SET JCOMBOBOX SIZE //
+	private void setJButtonSize(JButton buton, Dimension minimum, Dimension preferred, Dimension maximum) {
+		if (minimum != null) {buton.setMinimumSize(minimum);}
+		if (preferred != null) {buton.setPreferredSize(preferred);}
+		if (maximum != null) {buton.setMaximumSize(maximum);}
+	}
 	
-	public void setJComboBoxSize (JComboBox<? extends Object> combo, Dimension[] dim) {
-		switch (dim.length) {
-			case 1:
-				combo.setPreferredSize(dim[0]);
-				break;
-			case 2:
-				combo.setMinimumSize(dim[0]);
-				combo.setPreferredSize(dim[1]);
-				break;
-			case 3:
-				combo.setMinimumSize(dim[0]);
-				combo.setPreferredSize(dim[1]);
-				combo.setMaximumSize(dim[2]);
-				break;
-			default:
-				System.out.println("No size can be applied.\nMake sure that the Dimension array has [1 - 3] objects.");
-				break;
-		}
+	private void setJComboBoxSize (JComboBox<? extends Object> combo, Dimension minimum, Dimension preferred, Dimension maximum) {
+		if (minimum != null) {combo.setMinimumSize(minimum);}
+		if (preferred != null) {combo.setPreferredSize(preferred);}
+		if (maximum != null) {combo.setMaximumSize(maximum);}
 	}
 	
 	// METHOD UPDATE UI //

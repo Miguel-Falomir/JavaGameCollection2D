@@ -6,9 +6,10 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -27,7 +28,10 @@ public class MenuPanel extends JPanel {
 	
 	// VARIABLES //
 	
+	private List<Dimension> gameButtonSize = new ArrayList<Dimension>();
+	private List<Dimension> optionButtonSize = new ArrayList<Dimension>();
 	
+	private GridBagConstraints gbcCentered = null;
 	
 	// UI COMPONENTS //
 	
@@ -58,6 +62,11 @@ public class MenuPanel extends JPanel {
 		// set main frame
 		this.gui = gui;
 		
+		// set variables
+		gameButtonSize = gui.getSquaredButtonSize();
+		optionButtonSize = gui.getNormalButtonSize();
+		gbcCentered = gui.getGridBagConstraintsCentered();
+		
 		// build-up JPanel components
 		this.buildup();
 		
@@ -71,31 +80,6 @@ public class MenuPanel extends JPanel {
 		// set JPanel properties
 		this.setLayout(new BorderLayout());
 		
-		// declare variables
-		Dimension[] gameBtnSize = {
-			new Dimension(100, 100),
-			new Dimension(100, 100),
-			new Dimension(200, 200)
-		};
-		Dimension[] optionBtnSize = {
-			new Dimension(100, 50),
-			new Dimension(100, 50),
-			new Dimension(100, 50)
-		};
-		GridBagConstraints gbcCenter = new GridBagConstraints(
-			0,							// gridX (fila posicion)
-			0,							// gridY (columna posicion)
-			1,							// gridwidth (cantidad filas ocupadas)
-			1,							// gridheight (cantidad columnas ocupadas)
-			0.0,						// weightX (peso del componente respecto al ancho libre)
-			0.0,						// weightY (peso del componente respecto a la altura disponible)
-			GridBagConstraints.CENTER,	// anchor (lugar de la celda donde colocar el componente, si este es mas pequenyo)
-			GridBagConstraints.NONE,	// fill (metodo para reescalar el componente, si este es mas pequenyo que la celda)
-			new Insets(0, 0, 0, 0),		// insets (margenes externos para dejar espacio libre fuera de la celda)
-			0,							// ipadX (margen interno respecto al eje X, espacio libre dentro de la celda)
-			0							// ipadY (margen interno respecto al eje Y, espacio libre dentro de la celda)
-		);
-		
 		// declare panels
 		JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JPanel centerPanel = new JPanel(new GridLayout(2, 4));
@@ -103,7 +87,7 @@ public class MenuPanel extends JPanel {
 		
 		// top
 		// set properties
-		//topPanel.setBackground(Color.RED);
+		/* or not */
 		// set components
 		JLabel title = new JLabel(gui.getMessages().getString("main_Title"));
 		title.setFont(title.getFont().deriveFont(24.0f));
@@ -177,21 +161,24 @@ public class MenuPanel extends JPanel {
 			new JButton(gui.getMessages().getString("pacman_Title"))
 		};
 		for (int i = 0; i < gameButtonList.length; i++) {
-			gameButtonList[i].setMinimumSize(gameBtnSize[0]);
-			gameButtonList[i].setPreferredSize(gameBtnSize[1]);
-			gameButtonList[i].setMaximumSize(gameBtnSize[2]);
+			gui.setComponentSize(
+				gameButtonList[i],
+				gameButtonSize.get(0),
+				gameButtonSize.get(1),
+				gameButtonSize.get(2)
+			);
 			gameButtonList[i].addActionListener(gameStarterList[i]);
 		}
 		// add components
 		for (JButton btn : gameButtonList) {
 			JPanel pan = new JPanel(new GridBagLayout());
-			pan.add(btn, gbcCenter);
+			pan.add(btn, gbcCentered);
 			centerPanel.add(pan);
 		}
 		
 		// bottom
 		// set properties
-		//bottomPanel.setBackground(Color.GREEN);
+		/* or not */
 		bottomPanel.setPreferredSize(new Dimension(100, 100));
 		// set components
 		JButton[] optionButtonList = {
@@ -199,9 +186,12 @@ public class MenuPanel extends JPanel {
 			new JButton(gui.getMessages().getString("quit_Buton"))
 		};
 		for (JButton btn : optionButtonList) {
-			btn.setMinimumSize(optionBtnSize[0]);
-			btn.setPreferredSize(optionBtnSize[1]);
-			btn.setMaximumSize(optionBtnSize[2]);
+			gui.setComponentSize(
+				btn,
+				optionButtonSize.get(0),
+				optionButtonSize.get(1),
+				optionButtonSize.get(2)
+			);
 		}
 		// disable settings button until better implementation
 		optionButtonList[0].setEnabled(true);
@@ -221,7 +211,7 @@ public class MenuPanel extends JPanel {
 		// add components
 		for (JButton btn : optionButtonList) {
 			JPanel pan = new JPanel(new GridBagLayout());
-			pan.add(btn, gbcCenter);
+			pan.add(btn, gbcCentered);
 			bottomPanel.add(pan);
 		}
 		
