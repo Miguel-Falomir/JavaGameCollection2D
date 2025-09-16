@@ -3,18 +3,13 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -33,7 +28,6 @@ import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.EmptyBorder;
 
 import main.utilities.MenuPanel;
 
@@ -174,26 +168,6 @@ public class Gui extends JFrame {
 			default:
 				throw new IllegalArgumentException("Unexpected value: " + index);
 		}
-	}
-	
-	public List<Dimension> getNormalButtonSize() {
-		return normalButtonSize;
-	}
-	
-	public List<Dimension> getSquaredButtonSize() {
-		return squaredButtonSize;
-	}
-	
-	public List<Dimension> getMiniButtonSize() {
-		return miniButtonSize;
-	}
-	
-	public List<Dimension> getOptionsPanelSize() {
-		return optionsPanelSize;
-	}
-	
-	public List<Dimension> getComboBoxSize() {
-		return comboboxSize;
 	}
 	
 	public GridBagConstraints getGridBagConstraintsCentered() {

@@ -18,7 +18,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import main.Gui;
-import main.gameoflife.gui.ScreenPanel;
+import main.gameoflife.gui.GameOfLifeOptionsPanel;
+//import main.gameoflife.gui.ScreenPanel;
 
 public class MenuPanel extends JPanel {
 	
@@ -109,7 +110,7 @@ public class MenuPanel extends JPanel {
 			new ActionListener() { // game of life (J.H.Conway)
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					gui.mockup(new ScreenPanel(gui));
+					gui.mockup(new GameOfLifeOptionsPanel(gui));
 				}
 			},
 			new ActionListener() { // snake
