@@ -2,14 +2,27 @@ package main.utilities;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.border.EmptyBorder;
 
 import main.Gui;
 
@@ -26,6 +39,9 @@ public abstract class OptionsPanel extends JPanel {
 	protected List<Dimension> buttonSize = null;
 	protected List<Dimension> optionsPanelSize = null;
 	protected List<Dimension> optionsTitleSize = null;
+	protected List<Dimension> optionTitlePanelSize = null;
+	protected List<Dimension> optionControllerPanelSize = null;
+	protected List<Dimension> optionGapPanelSize = null;
 	
 	// UI COMPONENTS //
 	
@@ -54,6 +70,21 @@ public abstract class OptionsPanel extends JPanel {
 		buttonSize = gui.getStandardSize(4);
 		optionsPanelSize = gui.getStandardSize(1);
 		optionsTitleSize = gui.getStandardSize(5);
+		optionTitlePanelSize = Arrays.asList(
+			new Dimension(200, 40),
+			new Dimension(200, 40),
+			new Dimension(200, 40)
+		);
+		optionControllerPanelSize = Arrays.asList(
+			new Dimension(200, 25),
+			new Dimension(200, 25),
+			new Dimension(200, 25)
+		);
+		optionGapPanelSize = Arrays.asList(
+			new Dimension(200, 20),
+			new Dimension(200, 20),
+			new Dimension(200, 20)
+		);
 		
 		// set panel layouts
 		this.setLayout(new BorderLayout());
@@ -61,6 +92,10 @@ public abstract class OptionsPanel extends JPanel {
 		optionsPanel = new JPanel(new BorderLayout());
 		optionsTopPanel = new JPanel(new GridBagLayout());
 		optionsCenterPanel = new JPanel(new GridBagLayout());
+		optionsCenterCenterPanel = new JPanel();
+		optionsCenterCenterPanel.setLayout(
+			new BoxLayout(optionsCenterCenterPanel, BoxLayout.Y_AXIS)
+		);
 		optionsBottomPanel = new JPanel(new GridBagLayout());
 	}
 	
@@ -129,13 +164,74 @@ public abstract class OptionsPanel extends JPanel {
 		this.add(optionsPanel, BorderLayout.WEST);
 	}
 	
-	// METHOD GENERATE SLIDER COMPONENT //
+	// METHOD GENERATE TEXTAREA COMPONENT //
 	
-	protected void generateSlider(JSlider slider, JLabel title, JLabel value, int attributeIndex) {
+	protected void generateTextField(JTextField textfield, JLabel title, JButton buton, int attributeIndex) {
 		// declare panels
 		JPanel titlePanel = new JPanel(new BorderLayout());
-		JPanel sliderPanel = new JPanel();
+		JPanel controllerPanel = new JPanel(new BorderLayout());
+		JPanel controllerTextareaPanel = new JPanel(new BorderLayout());
+		JPanel controllerButtonPanel = new JPanel(new BorderLayout());
+		JPanel gapPanel = new JPanel();
 		
+		// set all components
+		title.setFont(title.getFont().deriveFont(18.0f));
+		textfield.setFont(textfield.getFont().deriveFont(14.0f));
+		textfield.setBorder(new EmptyBorder(2,4,2,4));
+		buton.setFont(buton.getFont().deriveFont(16.0f));
+		buton.setText(">");
+		
+		// title panel
+		// set properties
+		gui.setComponentSize(
+			titlePanel,
+			optionTitlePanelSize.get(0),
+			optionTitlePanelSize.get(1),
+			optionTitlePanelSize.get(2)
+		);
+		// add components
+		titlePanel.add(title, BorderLayout.WEST);
+		
+		// textarea panel
+		// set properties
+		gui.setComponentSize(
+			controllerPanel,
+			optionControllerPanelSize.get(0),
+			optionControllerPanelSize.get(1),
+			optionControllerPanelSize.get(2)
+		);
+		controllerButtonPanel.setBorder(new EmptyBorder(0,10,0,0));
+		// add components
+		controllerTextareaPanel.add(textfield, BorderLayout.CENTER);
+		controllerPanel.add(controllerTextareaPanel, BorderLayout.CENTER);
+		controllerButtonPanel.add(buton, BorderLayout.CENTER);
+		controllerPanel.add(controllerButtonPanel, BorderLayout.EAST);
+		
+		// gap panel
+		// set properties
+		gui.setComponentSize(
+			gapPanel,
+			optionGapPanelSize.get(0),
+			optionGapPanelSize.get(1),
+			optionGapPanelSize.get(2)
+		);
+		// add components
+		/* just kidding, this panel is solely an empty spacer */
+		
+		// add panels to main panel
+		optionsCenterCenterPanel.add(titlePanel);
+		optionsCenterCenterPanel.add(controllerPanel);
+		optionsCenterCenterPanel.add(gapPanel);
+	}
+	
+	// METHOD GENERATE SLIDER COMPONENT //
+	
+	protected void generateSlider(JSlider slider, JLabel title, JLabel value, boolean useTicks, int attributeIndex) {
+		// declare panels
+		JPanel titlePanel = new JPanel(new BorderLayout());
+		JPanel controllerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		JPanel gapPanel = new JPanel();
+
 		// set all components
 		title.setFont(title.getFont().deriveFont(18.0f));
 		value.setFont(value.getFont().deriveFont(18.0f));
@@ -144,9 +240,9 @@ public abstract class OptionsPanel extends JPanel {
 		// set properties
 		gui.setComponentSize(
 			titlePanel,
-			new Dimension(200, 40),
-			new Dimension(200, 40),
-			new Dimension(200, 40)
+			optionTitlePanelSize.get(0),
+			optionTitlePanelSize.get(1),
+			optionTitlePanelSize.get(2)
 		);
 		// add components
 		titlePanel.add(title, BorderLayout.WEST);
@@ -155,18 +251,156 @@ public abstract class OptionsPanel extends JPanel {
 		
 		// slider panel
 		// set properties
+		if (useTicks) {
+			gui.setComponentSize(
+				controllerPanel,
+				new Dimension(200, 25),
+				new Dimension(200, 25),
+				new Dimension(200, 25)
+			);
+		} else {			
+			gui.setComponentSize(
+				controllerPanel,
+				optionControllerPanelSize.get(0),
+				optionControllerPanelSize.get(1),
+				optionControllerPanelSize.get(2)
+			);
+		}
+		// add components
+		controllerPanel.add(slider);
+		
+		// gap panel
+		// set properties
 		gui.setComponentSize(
-			sliderPanel,
-			new Dimension(200, 40),
-			new Dimension(200, 40),
-			new Dimension(200, 40)
+			gapPanel,
+			optionGapPanelSize.get(0),
+			optionGapPanelSize.get(1),
+			optionGapPanelSize.get(2)
 		);
 		// add components
-		sliderPanel.add(slider);
+		/* just kidding, this panel is solely an empty spacer */
 		
 		// add panels to main panel
 		optionsCenterCenterPanel.add(titlePanel);
-		optionsCenterCenterPanel.add(sliderPanel);
+		optionsCenterCenterPanel.add(controllerPanel);
+		optionsCenterCenterPanel.add(gapPanel);
+	}
+	
+	// METHOD GENERATE COMBO BOX //
+	
+	protected void generateComboBox(JComboBox<Item> combo, JLabel title, List<Item> list, int attributeIndex) {
+		// declare panels
+		JPanel titlePanel = new JPanel(new BorderLayout());
+		JPanel controllerPanel = new JPanel(new BorderLayout());
+		JPanel gapPanel = new JPanel();
+		
+		// set all components
+		title.setFont(title.getFont().deriveFont(18.0f));
+		for (Item item : list) {
+			combo.addItem(item);
+		}
+		
+		// title panel
+		// set properties
+		gui.setComponentSize(
+			titlePanel,
+			optionTitlePanelSize.get(0),
+			optionTitlePanelSize.get(1),
+			optionTitlePanelSize.get(2)
+		);
+		// add components
+		titlePanel.add(title, BorderLayout.WEST);
+		
+		// combo box panel
+		// set properties
+		gui.setComponentSize(
+			controllerPanel,
+			optionControllerPanelSize.get(0),
+			optionControllerPanelSize.get(1),
+			optionControllerPanelSize.get(2)
+		);
+		// add components
+		controllerPanel.add(combo, BorderLayout.CENTER);
+		
+		// gap panel
+		// set properties
+		gui.setComponentSize(
+			gapPanel,
+			optionGapPanelSize.get(0),
+			optionGapPanelSize.get(1),
+			optionGapPanelSize.get(2)
+		);
+		// add components
+		/* just kidding, this panel is solely an empty spacer */
+		
+		// add panels to main panel
+		optionsCenterCenterPanel.add(titlePanel);
+		optionsCenterCenterPanel.add(controllerPanel);
+		optionsCenterCenterPanel.add(gapPanel);
+	}
+	
+	// METHOD GENERATE CHECK BOXES LIST //
+	
+	protected void generateCheckBoxesList(ArrayList<JCheckBox> check, JLabel title, List<Item> list, int attributeIndex) {
+		// declare panels
+		JPanel titlePanel = new JPanel(new BorderLayout());
+		JPanel controllerPanel = new JPanel();
+		controllerPanel.setLayout(
+			new BoxLayout(controllerPanel, BoxLayout.Y_AXIS)
+		);
+		JPanel gapPanel = new JPanel();
+		
+		// set all components
+		title.setFont(title.getFont().deriveFont(18.0f));
+		for (Item item : list) {
+			JCheckBox checkBox = new JCheckBox(item.toString());
+			checkBox.setFont(checkBox.getFont().deriveFont(14.0f));
+			checkBox.setName(item.id);
+			check.add(checkBox);
+		}
+		
+		// title panel
+		// set properties
+		gui.setComponentSize(
+			titlePanel,
+			optionTitlePanelSize.get(0),
+			optionTitlePanelSize.get(1),
+			optionTitlePanelSize.get(2)
+		);
+		// add components
+		titlePanel.add(title, BorderLayout.WEST);
+		
+		// toggle buttons list panel
+		// set properties
+		int height = 30 * list.size();
+		gui.setComponentSize(
+			controllerPanel,
+			new Dimension(200, height),
+			new Dimension(200, height),
+			new Dimension(200, height)
+		);
+		// add components
+		for (JCheckBox box : check) {
+			JPanel checkPanel = new JPanel(new BorderLayout());
+			checkPanel.add(box, BorderLayout.WEST);
+			controllerPanel.add(checkPanel);
+		}
+		
+		// gap panel
+		// set properties
+		gui.setComponentSize(
+			gapPanel,
+			optionGapPanelSize.get(0),
+			optionGapPanelSize.get(1),
+			optionGapPanelSize.get(2)
+		);
+		// add components
+		/* just kidding, this panel is solely an empty spacer */
+		
+		// add panels to main panel
+		optionsCenterCenterPanel.add(titlePanel);
+		optionsCenterCenterPanel.add(controllerPanel);
+		optionsCenterCenterPanel.add(gapPanel);
 	}
 	
 	// METHOD BUILDUP DISPLAY PANEL //

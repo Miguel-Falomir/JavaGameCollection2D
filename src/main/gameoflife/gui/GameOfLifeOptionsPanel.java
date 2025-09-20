@@ -4,15 +4,26 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import main.Gui;
+import main.utilities.Item;
 import main.utilities.MenuPanel;
 import main.utilities.OptionsPanel;
 
@@ -22,17 +33,34 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 
 	private static final long serialVersionUID = 7388218801567522611L;
 	
+	// CUSTOM CLASSES FOR COMBOBOX ITEMS //
+	
+	private class CheckBoxItem extends Item {
+		// getters and setters
+		public String getId() {return id;}
+		public String getName() {return name;}
+		
+		// constructor
+		public CheckBoxItem (String id, String name) {
+			this.id = id;
+			this.name = name;
+		}
+	}
+	
+	// VARIABLES //
+	
 	/**
 	 * Note: Adidas-like (///) comments refer to protected objects from parent class
 	 */
-	
-	// VARIABLES //
 	
 	///protected GridBagConstraints gbcCentered = null;
 
 	///protected List<Dimension> buttonSize = null;
 	///protected List<Dimension> optionsPanelSize = null;
 	///protected List<Dimension> optionsTitleSize = null;
+	///protected List<Dimension> optionTitlePanelSize = null;
+	///protected List<Dimension> optionControllerPanelSize = null;
+	///protected List<Dimension> optionGapPanelSize = null;
 	
 	// UI COMPONENTS //
 	
@@ -61,13 +89,6 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		// initialize attributes from parent class
 		super(gui);
 		
-		// set private panels
-		optionsCenterCenterPanel = new JPanel();
-		optionsCenterCenterPanel.setLayout(
-			new BoxLayout(optionsCenterCenterPanel, BoxLayout.Y_AXIS)
-		);
-		optionsCenterBottomPanel = new JPanel(new GridBagLayout());
-		
 		// initialize 'displayPanel'
 		buildupDisplay();
 		
@@ -93,21 +114,85 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		 * a supergenius gigachad. I wish I had a horny girl to snog right now :(
 		 */
 		generateSlider(
-			new JSlider(),
-			new JLabel(gui.getMessages().getString("gameoflife_Title") + " :"),
+			new JSlider(0, 50, displayPanel.getNumber()),
+			new JLabel("Slider:"),
 			new JLabel(String.valueOf(displayPanel.getNumber())),
+			true,
 			1
 		);
+		
+		generateTextField(
+			new JTextField(),
+			new JLabel("Text Field:"),
+			new JButton(),
+			1
+		);
+		/**
+		generateComboBox(
+			new JComboBox<Item>(),
+			new JLabel("Combo Box:"),
+			Arrays.asList(
+				new comboItem("id_1", "option 1"),
+				new comboItem("id_2", "option 2"),
+				new comboItem("id_3", "option 3")
+			),
+			1
+		);*/
+		
+		generateCheckBoxesList(
+			new ArrayList<JCheckBox>(),
+			new JLabel("Toggle Buttons:"),
+			Arrays.asList(
+				new CheckBoxItem("id_1", "option 1"),
+				new CheckBoxItem("id_2", "option 2"),
+				new CheckBoxItem("id_3", "option 3")
+			),
+			1
+		);
+		
+		
 	}
 	
-	// METHOD GENERATE OPTION WITH SLIDER //
+	// OVERRIDE METHOD 'generateTextArea' //
 	
 	@Override
-	protected void generateSlider(JSlider slider, JLabel title, JLabel value, int attributeIndex) {
+	protected void generateTextField(JTextField textfield, JLabel title, JButton buton, int attributeIndex) {
 		// initialize
-		super.generateSlider(slider, title, value, attributeIndex);
+		super.generateTextField(textfield, title, buton, attributeIndex);
 		
-		// set slider properties
+		// set textarea properties
+		textfield.setText("value");
+		
+		// implement switch-case within action listener as an action selector
+		buton.addActionListener( event -> {
+			String value = textfield.getText();
+			switch (attributeIndex) {
+			case 1: {
+				System.out.println(value);
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + attributeIndex);
+			}
+		});
+	}
+	
+	// OVERRIDE METHOD 'generateSlider' //
+	
+	@Override
+	protected void generateSlider(JSlider slider, JLabel title, JLabel value, boolean useTicks, int attributeIndex) {
+		// initialize
+		super.generateSlider(slider, title, value, useTicks, attributeIndex);
+		
+		// show ticks
+		if (useTicks) {			
+			slider.setMinorTickSpacing(5);
+			slider.setMajorTickSpacing(10);
+			slider.setPaintTicks(true);
+			slider.setPaintLabels(true);
+		}
+	    
+	    // set slider properties
 		slider.setValue(displayPanel.getNumber());
 		
 		// implement switch-case within change listener as an action selector
@@ -124,14 +209,57 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 			int number = slider.getValue();
 			value.setText(String.valueOf(number));
 			switch (attributeIndex) {
-				case 1: {
+				case 1:
 					displayPanel.setNumber(number);
 					break;
-				}
 				default:
 					throw new IllegalArgumentException("Unexpected value: " + attributeIndex);
 			}
 		});
+	}
+	
+	// OVERRIDE METHOD 'generateComboBox' //
+	
+	@Override
+	protected void generateComboBox(JComboBox<Item> combo, JLabel title, List<Item> list, int attributeIndex) {
+		// initialize
+		super.generateComboBox(combo, title, list, attributeIndex);
+		
+		// set properties
+		/* just in case... */
+		
+		// implement switch-case within action listener as an action selector
+		
+	}
+	
+	// OVERRIDE METHOD 'generateCheckBoxesList' //
+	
+	@Override
+	protected void generateCheckBoxesList(ArrayList<JCheckBox> check, JLabel title, List<Item> list, int attributeIndex) {
+		// initialize
+		super.generateCheckBoxesList(check, title, list, attributeIndex);
+		
+		// set properties
+		/* just in case... */
+		System.out.println(attributeIndex);
+		
+		// implement switch-case within action listener as an action selector
+		switch (attributeIndex) {
+			case 1:
+				for (JCheckBox box : check) {
+					box.addActionListener( event -> {
+						for (int i = 0; i < check.size(); i++) {						
+							if (check.get(i).isSelected()) {
+								CheckBoxItem item = (CheckBoxItem) list.get(i);
+								System.out.println(item.getName());
+							}
+						}
+					});
+				}
+				break;
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + attributeIndex);
+		}
 	}
 	
 	// OVERRIDE METHOD 'buildupDisplay' //
