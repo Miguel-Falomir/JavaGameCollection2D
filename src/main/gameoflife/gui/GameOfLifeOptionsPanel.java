@@ -1,30 +1,19 @@
 package main.gameoflife.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import main.Gui;
 import main.utilities.Item;
-import main.utilities.MenuPanel;
 import main.utilities.OptionsPanel;
 
 public class GameOfLifeOptionsPanel extends OptionsPanel{
@@ -47,11 +36,7 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		}
 	}
 	
-	// VARIABLES //
-	
-	/**
-	 * Note: Adidas-like (///) comments refer to protected objects from parent class
-	 */
+	// INHERITED //
 	
 	///protected GridBagConstraints gbcCentered = null;
 
@@ -61,8 +46,6 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 	///protected List<Dimension> optionTitlePanelSize = null;
 	///protected List<Dimension> optionControllerPanelSize = null;
 	///protected List<Dimension> optionGapPanelSize = null;
-	
-	// UI COMPONENTS //
 	
 	///protected Gui gui = null;
 	
@@ -75,11 +58,14 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 	///protected JPanel optionsBottomPanel = null;
 	
 	///protected JLabel jlabel_title = null;
-	private JLabel gridRangeValue = null;
 	
 	///protected JButton jbuton_back = null;
+	
+	// VARIABLES //
+	
 
-	private JSlider gridRangeSlider = null;
+	
+	// UI COMPONENTS //
 	
 	private GameOfLifeDisplayPanel displayPanel = null;
 	
@@ -160,21 +146,21 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		// initialize
 		super.generateTextField(textfield, title, buton, attributeIndex);
 		
-		// set textarea properties
+		// set textfield properties
 		textfield.setText("value");
 		
-		// implement switch-case within action listener as an action selector
-		buton.addActionListener( event -> {
-			String value = textfield.getText();
-			switch (attributeIndex) {
+		// use switch-case as a selector to add one or other action listener
+		switch (attributeIndex) {
 			case 1: {
-				System.out.println(value);
+				buton.addActionListener( event -> {
+					String value = textfield.getText();
+					System.out.println(value);
+				});
 				break;
 			}
 			default:
 				throw new IllegalArgumentException("Unexpected value: " + attributeIndex);
-			}
-		});
+		}
 	}
 	
 	// OVERRIDE METHOD 'generateSlider' //
@@ -195,27 +181,27 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 	    // set slider properties
 		slider.setValue(displayPanel.getNumber());
 		
-		// implement switch-case within change listener as an action selector
+		// use switch-case as a selector to add one or other action listener
 		/**
 		 * This is the simplest solution I could come with. I wish I knew more about
-		 * lambda expressions, but even in that case all StackOverflow solution seemed
+		 * lambda expressions, but even in that case all StackOverflow solutions seemed
 		 * to be too much verbose for me. For those who doesn't know (I googled it 10
 		 * minutes before writing this comment) verbosity is the abundance or excess of
 		 * word, for instance:
 		 * (normal)  Karen drives a big car.
-		 * (verbose) The woman named karen happens to get herself to places by driving a car of big proportions.
+		 * (verbose) The woman named Karen happens to get herself to places by driving a car of big proportions.
 		 */
-		slider.addChangeListener( event -> {
-			int number = slider.getValue();
-			value.setText(String.valueOf(number));
-			switch (attributeIndex) {
-				case 1:
+		switch (attributeIndex) {
+			case 1:
+				slider.addChangeListener( event -> {
+					int number = slider.getValue();
+					value.setText(String.valueOf(number));
 					displayPanel.setNumber(number);
-					break;
-				default:
-					throw new IllegalArgumentException("Unexpected value: " + attributeIndex);
-			}
-		});
+				});
+				break;
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + attributeIndex);
+		}
 	}
 	
 	// OVERRIDE METHOD 'generateComboBox' //
@@ -225,10 +211,10 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		// initialize
 		super.generateComboBox(combo, title, list, attributeIndex);
 		
-		// set properties
+		// set combobox properties
 		/* just in case... */
 		
-		// implement switch-case within action listener as an action selector
+		// use switch-case as a selector to add one or other action listener
 		
 	}
 	
@@ -239,11 +225,10 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		// initialize
 		super.generateCheckBoxesList(check, title, list, attributeIndex);
 		
-		// set properties
+		// set each check box properties
 		/* just in case... */
-		System.out.println(attributeIndex);
 		
-		// implement switch-case within action listener as an action selector
+		// use switch-case as a selector to add one or other action listener
 		switch (attributeIndex) {
 			case 1:
 				for (JCheckBox box : check) {

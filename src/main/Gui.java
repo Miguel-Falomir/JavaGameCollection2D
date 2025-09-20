@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import main.utilities.Item;
 import main.utilities.MenuPanel;
 
 public class Gui extends JFrame {
@@ -250,7 +251,7 @@ public class Gui extends JFrame {
 			JButton buton = (JButton) obj;
 			setJButtonSize(buton, minimum, preferred, maximum);			
 		} else if (obj instanceof JComboBox) {	// JComboBox
-			JComboBox<? extends Object> combo = (JComboBox<? extends Object>) obj;
+			JComboBox<Item> combo = (JComboBox<Item>) obj;
 			setJComboBoxSize(combo, minimum, preferred, maximum);
 		} else {
 			System.out.println("Class not valid");
@@ -275,7 +276,7 @@ public class Gui extends JFrame {
 		if (maximum != null) {buton.setMaximumSize(maximum);}
 	}
 	
-	private void setJComboBoxSize (JComboBox<? extends Object> combo, Dimension minimum, Dimension preferred, Dimension maximum) {
+	private void setJComboBoxSize (JComboBox<Item> combo, Dimension minimum, Dimension preferred, Dimension maximum) {
 		if (minimum != null) {combo.setMinimumSize(minimum);}
 		if (preferred != null) {combo.setPreferredSize(preferred);}
 		if (maximum != null) {combo.setMaximumSize(maximum);}
