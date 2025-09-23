@@ -1,6 +1,6 @@
 package main.utilities;
 
-public abstract class Item {
+public class Item {
 	
 	// ATTRIBUTES //
 	

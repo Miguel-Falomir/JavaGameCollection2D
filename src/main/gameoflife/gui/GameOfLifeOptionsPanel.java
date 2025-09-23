@@ -1,6 +1,10 @@
 package main.gameoflife.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
@@ -23,6 +28,22 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 	private static final long serialVersionUID = 7388218801567522611L;
 	
 	// CUSTOM CLASSES FOR COMBOBOX ITEMS //
+	
+	private class GridRangeItem extends Item {
+		// attributes
+		private int gridRange;
+		
+		// getters and setters
+		public void setName(String name) {this.name = name;}
+		public int getGridRange() {return gridRange;}
+		
+		// constructor
+		public GridRangeItem(int gridRange) {
+			this.id = String.valueOf(gridRange);
+			this.name = String.valueOf(gridRange) + " X " + String.valueOf(gridRange);
+			this.gridRange = gridRange;
+		}
+	}
 	
 	private class CheckBoxItem extends Item {
 		// getters and setters
@@ -59,11 +80,15 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 	
 	///protected JLabel jlabel_title = null;
 	
-	///protected JButton jbuton_back = null;
+	///protected JButton jbutton_back = null;
 	
 	// VARIABLES //
 	
-
+	private List<Item> gridRangeList = Arrays.asList(
+		new GridRangeItem(24),
+		new GridRangeItem(48),
+		new GridRangeItem(60)
+	);
 	
 	// UI COMPONENTS //
 	
@@ -85,11 +110,11 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 	// OVERRIDE METHOD 'buildupOptions' //
 	
 	@Override
-	protected void buildupOptions() { /* todavia falta agregar controladores de ajustes */
+	protected void buildupOptions() {
 		// initialize and compose panels of both title and back button
 		super.buildupOptions();
 		
-		// add controllers to the options panel
+		// add controllers to 'optionsCenterCenterPanel'
 		/**
 		 * This might blow most people's minds (I still haven't found all the fragments
 		 * of my head) but child components can be modified after being added to the
@@ -99,52 +124,101 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		 * class, save tens (or even hundreds) of redundant lines of code, and feel like
 		 * a supergenius gigachad. I wish I had a horny girl to snog right now :(
 		 */
-		generateSlider(
-			new JSlider(0, 50, displayPanel.getNumber()),
-			new JLabel("Slider:"),
-			new JLabel(String.valueOf(displayPanel.getNumber())),
-			true,
-			1
-		);
-		
-		generateTextField(
-			new JTextField(),
-			new JLabel("Text Field:"),
-			new JButton(),
-			1
-		);
-		/**
 		generateComboBox(
 			new JComboBox<Item>(),
-			new JLabel("Combo Box:"),
-			Arrays.asList(
-				new comboItem("id_1", "option 1"),
-				new comboItem("id_2", "option 2"),
-				new comboItem("id_3", "option 3")
-			),
-			1
-		);*/
-		
-		generateCheckBoxesList(
-			new ArrayList<JCheckBox>(),
-			new JLabel("Toggle Buttons:"),
-			Arrays.asList(
-				new CheckBoxItem("id_1", "option 1"),
-				new CheckBoxItem("id_2", "option 2"),
-				new CheckBoxItem("id_3", "option 3")
-			),
+			new JLabel(gui.getMessages().getString("gameoflife_GridRange_Label")),
+			gridRangeList,
 			1
 		);
 		
+		generateSlider(
+			new JSlider(3, 1000, displayPanel.getTimeLapse()),
+			new JLabel(gui.getMessages().getString("gameoflife_TimeLapse_Label")),
+			new JLabel(String.valueOf(displayPanel.getTimeLapse()) + " ms"),
+			false,
+			1
+		);
+
+		generateSlider(
+			new JSlider(1, 5, displayPanel.getMaxLife()),
+			new JLabel(gui.getMessages().getString("gameoflife_MaxLife_Label")),
+			new JLabel(String.valueOf(displayPanel.getMaxLife())),
+			true,
+			2
+		);
 		
+		// add a pause menu to 'optionsCenterBottomPanel'
+		buildupPauseMenu();
+	}
+	
+	// OVERRIDE METHOD 'buildupPauseMenu' //
+	
+	@Override
+	protected void buildupPauseMenu() {
+		// initialize (despite this method is supposed to be empty...)
+		super.buildupPauseMenu();
+		
+		// declare components
+		JPanel pauseMenuPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+		JButton[] buttonArray = {
+			new JButton("<<"),
+			new JButton("[]"),
+			new JButton("||"),
+			new JButton("!>"),
+			new JButton(">>")
+		};
+		
+		// set panel properties
+		gui.setComponentSize(
+			pauseMenuPanel,
+			new Dimension(300, 40),
+			new Dimension(300, 40),
+			new Dimension(300, 40)
+		);
+		
+		// add buttons to 'pauseMenuPanel'
+		for (JButton button : buttonArray) {
+			// button properties
+			gui.setComponentSize(
+				button,
+				new Dimension(40, 40),
+				new Dimension(40, 40),
+				new Dimension(40, 40)
+			);
+			button.setMargin(new Insets(1,1,1,1));
+			// add within GridBagLayout to center
+			JPanel pan = new JPanel(new GridBagLayout());
+			pan.add(button, gbcCentered);
+			pauseMenuPanel.add(pan);
+		}
+		
+		// add 'pauseMenuPanel' to 'optionsCenterBottomPanel'
+		optionsCenterBottomPanel.add(pauseMenuPanel, gbcCentered);
+	}
+	
+	// OVERRIDE METHOD 'buildupDisplay' //
+	
+	@Override
+	protected void buildupDisplay() {
+		// initialize (despite this method is supposed to be empty...)
+		super.buildupDisplay();
+		
+		// set properties (coming soon...)
+		displayPanel = new GameOfLifeDisplayPanel(gui);
+		
+		// add 'displayPanel' to 'centralPanel'
+		centralPanel.add(displayPanel, gbcCentered);
+		
+		// add 'centralPanel' to screen
+		this.add(centralPanel, BorderLayout.CENTER);
 	}
 	
 	// OVERRIDE METHOD 'generateTextArea' //
 	
 	@Override
-	protected void generateTextField(JTextField textfield, JLabel title, JButton buton, int attributeIndex) {
+	protected void generateTextField(JTextField textfield, JLabel title, JButton button, int attributeIndex) {
 		// initialize
-		super.generateTextField(textfield, title, buton, attributeIndex);
+		super.generateTextField(textfield, title, button, attributeIndex);
 		
 		// set textfield properties
 		textfield.setText("value");
@@ -152,7 +226,7 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		// use switch-case as a selector to add one or other action listener
 		switch (attributeIndex) {
 			case 1: {
-				buton.addActionListener( event -> {
+				button.addActionListener( event -> {
 					String value = textfield.getText();
 					System.out.println(value);
 				});
@@ -170,18 +244,7 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		// initialize
 		super.generateSlider(slider, title, value, useTicks, attributeIndex);
 		
-		// show ticks
-		if (useTicks) {			
-			slider.setMinorTickSpacing(5);
-			slider.setMajorTickSpacing(10);
-			slider.setPaintTicks(true);
-			slider.setPaintLabels(true);
-		}
-	    
-	    // set slider properties
-		slider.setValue(displayPanel.getNumber());
-		
-		// use switch-case as a selector to add one or other action listener
+		// use switch-case as a selector of one or other configuration
 		/**
 		 * This is the simplest solution I could come with. I wish I knew more about
 		 * lambda expressions, but even in that case all StackOverflow solutions seemed
@@ -192,12 +255,30 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		 * (verbose) The woman named Karen happens to get herself to places by driving a car of big proportions.
 		 */
 		switch (attributeIndex) {
-			case 1:
+			case 1:	// time lapse slider
+				slider.addChangeListener( event -> {
+					int number = slider.getValue();
+					value.setText(String.valueOf(number) + " ms");
+					displayPanel.setTimeLapse(number);
+				});
+				if (useTicks) {			
+					slider.setMinorTickSpacing(50);
+					slider.setMajorTickSpacing(250);
+					slider.setPaintTicks(true);
+					slider.setPaintLabels(true);
+				}
+				break;
+			case 2:	// max life slider
 				slider.addChangeListener( event -> {
 					int number = slider.getValue();
 					value.setText(String.valueOf(number));
-					displayPanel.setNumber(number);
+					displayPanel.setMaxLife(number);
 				});
+				if (useTicks) {			
+					slider.setMajorTickSpacing(1);
+					slider.setPaintTicks(true);
+					slider.setPaintLabels(true);
+				}
 				break;
 			default:
 				throw new IllegalArgumentException("Unexpected value: " + attributeIndex);
@@ -212,10 +293,19 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		super.generateComboBox(combo, title, list, attributeIndex);
 		
 		// set combobox properties
-		/* just in case... */
+		combo.setSelectedItem(list.get(2));
 		
-		// use switch-case as a selector to add one or other action listener
-		
+		// add action listener
+		/**
+		 * why would I bundle various listeners within one switch-case, if I only need
+		 * to use one combobox for this very case? And what the hell took me this long
+		 * to realize? >:(
+		 */
+		combo.addActionListener( event -> {
+			GridRangeItem selected = (GridRangeItem) combo.getSelectedItem();
+			int newGridRange = selected.getGridRange();
+			displayPanel.setGridRange(newGridRange);
+		});
 	}
 	
 	// OVERRIDE METHOD 'generateCheckBoxesList' //
@@ -245,17 +335,6 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 			default:
 				throw new IllegalArgumentException("Unexpected value: " + attributeIndex);
 		}
-	}
-	
-	// OVERRIDE METHOD 'buildupDisplay' //
-	
-	@Override
-	protected void buildupDisplay() {
-		// set properties (coming soon...)
-		displayPanel = new GameOfLifeDisplayPanel();
-		
-		// add panels
-		this.add(centralPanel, BorderLayout.CENTER);
 	}
 
 }

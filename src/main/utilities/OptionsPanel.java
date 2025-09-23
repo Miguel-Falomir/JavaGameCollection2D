@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +53,7 @@ public abstract class OptionsPanel extends JPanel {
 	
 	protected JLabel jlabel_title = null;
 	
-	protected JButton jbuton_back = null;
+	protected JButton jbutton_back = null;
 	
 	// CONSTRUCTOR //
 	
@@ -83,14 +84,15 @@ public abstract class OptionsPanel extends JPanel {
 		
 		// set panel layouts
 		this.setLayout(new BorderLayout());
-		centralPanel = new JPanel(new BorderLayout());
+		centralPanel = new JPanel(new GridBagLayout());
 		optionsPanel = new JPanel(new BorderLayout());
 		optionsTopPanel = new JPanel(new GridBagLayout());
-		optionsCenterPanel = new JPanel(new GridBagLayout());
+		optionsCenterPanel = new JPanel(new BorderLayout());
 		optionsCenterCenterPanel = new JPanel();
 		optionsCenterCenterPanel.setLayout(
 			new BoxLayout(optionsCenterCenterPanel, BoxLayout.Y_AXIS)
 		);
+		optionsCenterBottomPanel = new JPanel(new GridBagLayout());
 		optionsBottomPanel = new JPanel(new GridBagLayout());
 	}
 	
@@ -123,12 +125,21 @@ public abstract class OptionsPanel extends JPanel {
 		// center panel
 		// set properties
 		gui.setComponentSize(
-			optionsCenterCenterPanel,
-			new Dimension(200, 600),
-			new Dimension(200, 600),
-			new Dimension(200, 600)
+			optionsCenterPanel,
+			new Dimension(300, 900),
+			new Dimension(300, 900),
+			new Dimension(300, 900)
 		);
-		optionsCenterPanel.add(optionsCenterCenterPanel, gbcCentered);
+		// set components
+		gui.setComponentSize(
+			optionsCenterBottomPanel,
+			new Dimension(300, 70),
+			new Dimension(300, 70),
+			new Dimension(300, 70)
+		);
+		// add panels
+		optionsCenterPanel.add(optionsCenterCenterPanel, BorderLayout.CENTER);
+		optionsCenterPanel.add(optionsCenterBottomPanel, BorderLayout.SOUTH);
 		
 		// bottom panel
 		// set properties
@@ -139,18 +150,18 @@ public abstract class OptionsPanel extends JPanel {
 			optionsTitleSize.get(2)
 		);
 		// set components
-		jbuton_back = new JButton(gui.getMessages().getString("back_Buton"));
+		jbutton_back = new JButton(gui.getMessages().getString("back_Buton"));
 		gui.setComponentSize(
-			jbuton_back,
+			jbutton_back,
 			buttonSize.get(0),
 			buttonSize.get(1),
 			buttonSize.get(2)
 		);
-		jbuton_back.addActionListener( event -> {
+		jbutton_back.addActionListener( event -> {
 			gui.mockup(new MenuPanel(gui));
 		});
 		// add components
-		optionsBottomPanel.add(jbuton_back);
+		optionsBottomPanel.add(jbutton_back);
 		
 		// add panels
 		optionsPanel.add(optionsTopPanel, BorderLayout.NORTH);
@@ -159,9 +170,17 @@ public abstract class OptionsPanel extends JPanel {
 		this.add(optionsPanel, BorderLayout.WEST);
 	}
 	
+	// METHOD BUILDUP PAUSE MENU //
+	
+	protected void buildupPauseMenu() {}
+	
+	// METHOD BUILDUP DISPLAY PANEL //
+	
+	protected void buildupDisplay() {}
+	
 	// METHOD GENERATE TEXTAREA COMPONENT //
 	
-	protected void generateTextField(JTextField textfield, JLabel title, JButton buton, int attributeIndex) {
+	protected void generateTextField(JTextField textfield, JLabel title, JButton button, int attributeIndex) {
 		// declare panels
 		JPanel titlePanel = new JPanel(new BorderLayout());
 		JPanel controllerPanel = new JPanel(new BorderLayout());
@@ -173,8 +192,8 @@ public abstract class OptionsPanel extends JPanel {
 		title.setFont(title.getFont().deriveFont(18.0f));
 		textfield.setFont(textfield.getFont().deriveFont(14.0f));
 		textfield.setBorder(new EmptyBorder(2,4,2,4));
-		buton.setFont(buton.getFont().deriveFont(16.0f));
-		buton.setText(">");
+		button.setFont(button.getFont().deriveFont(16.0f));
+		button.setText(">");
 		
 		// title panel
 		// set properties
@@ -199,7 +218,7 @@ public abstract class OptionsPanel extends JPanel {
 		// add components
 		controllerTextareaPanel.add(textfield, BorderLayout.CENTER);
 		controllerPanel.add(controllerTextareaPanel, BorderLayout.CENTER);
-		controllerButtonPanel.add(buton, BorderLayout.CENTER);
+		controllerButtonPanel.add(button, BorderLayout.CENTER);
 		controllerPanel.add(controllerButtonPanel, BorderLayout.EAST);
 		
 		// gap panel
@@ -249,9 +268,9 @@ public abstract class OptionsPanel extends JPanel {
 		if (useTicks) {
 			gui.setComponentSize(
 				controllerPanel,
-				new Dimension(200, 25),
-				new Dimension(200, 25),
-				new Dimension(200, 25)
+				new Dimension(200, 45),
+				new Dimension(200, 45),
+				new Dimension(200, 45)
 			);
 		} else {			
 			gui.setComponentSize(
@@ -289,12 +308,6 @@ public abstract class OptionsPanel extends JPanel {
 		JPanel controllerPanel = new JPanel(new BorderLayout());
 		JPanel gapPanel = new JPanel();
 		
-		// set all components
-		title.setFont(title.getFont().deriveFont(18.0f));
-		for (Item item : list) {
-			combo.addItem(item);
-		}
-		
 		// title panel
 		// set properties
 		gui.setComponentSize(
@@ -303,6 +316,8 @@ public abstract class OptionsPanel extends JPanel {
 			optionTitlePanelSize.get(1),
 			optionTitlePanelSize.get(2)
 		);
+		// set components
+		title.setFont(title.getFont().deriveFont(18.0f));
 		// add components
 		titlePanel.add(title, BorderLayout.WEST);
 		
@@ -314,11 +329,17 @@ public abstract class OptionsPanel extends JPanel {
 			optionControllerPanelSize.get(1),
 			optionControllerPanelSize.get(2)
 		);
+		// set components
+		for (Item item : list) {
+			combo.addItem(item);
+		}
 		// add components
 		controllerPanel.add(combo, BorderLayout.CENTER);
 		
 		// gap panel
 		// set properties
+		/* or not... */
+		// set components
 		gui.setComponentSize(
 			gapPanel,
 			optionGapPanelSize.get(0),
@@ -397,9 +418,5 @@ public abstract class OptionsPanel extends JPanel {
 		optionsCenterCenterPanel.add(controllerPanel);
 		optionsCenterCenterPanel.add(gapPanel);
 	}
-	
-	// METHOD BUILDUP DISPLAY PANEL //
-	
-	protected void buildupDisplay() {}
 
 }

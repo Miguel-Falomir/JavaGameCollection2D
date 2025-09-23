@@ -44,8 +44,8 @@ public class MenuPanel extends JPanel {
 	
 	JLabel jlabel_page_title = new JLabel();
 	
-	JButton jbuton_settings = new JButton();
-	JButton jbuton_quit = new JButton();
+	JButton jbutton_settings = new JButton();
+	JButton jbutton_quit = new JButton();
 	JButton[] gameButtonList = {
 		new JButton("Solitaire"),
 		new JButton("Game of life"),

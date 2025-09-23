@@ -98,8 +98,8 @@ public class SettingsPanel extends JPanel {
 	JLabel jlabel_setting_location = new JLabel();
 	JLabel jlabel_setting_lookandfeel = new JLabel();
 	
-	JButton jbuton_back = new JButton();
-	JButton jbuton_save = new JButton();
+	JButton jbutton_back = new JButton();
+	JButton jbutton_save = new JButton();
 	
 	JComboBox<LocationItem> jcombo_setting_location = new JComboBox<LocationItem>();
 	JComboBox<LookAndFeelItem> jcombo_setting_lookandfeel = new JComboBox<LookAndFeelItem>();
@@ -193,33 +193,33 @@ public class SettingsPanel extends JPanel {
 		jpanel_gridbag[0].setLayout(new GridBagLayout());
 		jpanel_gridbag[1].setLayout(new GridBagLayout());
 		// set component properties
-		jbuton_back.setText(gui.getMessages().getString("back_Buton"));
+		jbutton_back.setText(gui.getMessages().getString("back_Buton"));
 		gui.setComponentSize(
-			jbuton_back,
+			jbutton_back,
 			buttonSize.get(0),
 			buttonSize.get(1),
 			buttonSize.get(2)
 		);
-		jbuton_save.setText(gui.getMessages().getString("save_Buton"));
+		jbutton_save.setText(gui.getMessages().getString("save_Buton"));
 		gui.setComponentSize(
-			jbuton_save,
+			jbutton_save,
 			buttonSize.get(0),
 			buttonSize.get(1),
 			buttonSize.get(2)
 		);
 		// add events
-		jbuton_back.addActionListener(event -> {
+		jbutton_back.addActionListener(event -> {
 			gui.readSettings();
 			gui.mockup(new MenuPanel(gui));
 		});
-		jbuton_save.addActionListener(event -> {
+		jbutton_save.addActionListener(event -> {
 			gui.writeSettings();
 			gui.mockup(new MenuPanel(gui));
 		});
 		// add components
-		jpanel_gridbag[0].add(jbuton_back, gui.getGridBagConstraintsCentered());
+		jpanel_gridbag[0].add(jbutton_back, gui.getGridBagConstraintsCentered());
 		jpanel_bottom.add(jpanel_gridbag[0]);
-		jpanel_gridbag[1].add(jbuton_save, gui.getGridBagConstraintsCentered());
+		jpanel_gridbag[1].add(jbutton_save, gui.getGridBagConstraintsCentered());
 		jpanel_bottom.add(jpanel_gridbag[1]);
 		
 		// add action listeners at the very end to ensure every UI component is recognized
@@ -246,8 +246,8 @@ public class SettingsPanel extends JPanel {
 				}
 				jlabel_setting_location.setText(gui.getMessages().getString("language_Label"));
 				jlabel_setting_lookandfeel.setText(gui.getMessages().getString("lookandfeel_Label"));
-				jbuton_back.setText(gui.getMessages().getString("back_Buton"));
-				jbuton_save.setText(gui.getMessages().getString("save_Buton"));
+				jbutton_back.setText(gui.getMessages().getString("back_Buton"));
+				jbutton_save.setText(gui.getMessages().getString("save_Buton"));
 			}
 		);
 		jcombo_setting_lookandfeel.addActionListener(

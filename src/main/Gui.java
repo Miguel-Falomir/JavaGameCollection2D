@@ -248,8 +248,8 @@ public class Gui extends JFrame {
 			JLabel label = (JLabel) obj;
 			setJLabelSize(label, minimum, preferred, maximum);
 		} else if (obj instanceof JButton) {	// JButton
-			JButton buton = (JButton) obj;
-			setJButtonSize(buton, minimum, preferred, maximum);			
+			JButton button = (JButton) obj;
+			setJButtonSize(button, minimum, preferred, maximum);			
 		} else if (obj instanceof JComboBox) {	// JComboBox
 			JComboBox<Item> combo = (JComboBox<Item>) obj;
 			setJComboBoxSize(combo, minimum, preferred, maximum);
@@ -270,10 +270,10 @@ public class Gui extends JFrame {
 		if (maximum != null) {label.setMaximumSize(maximum);}
 	}
 	
-	private void setJButtonSize(JButton buton, Dimension minimum, Dimension preferred, Dimension maximum) {
-		if (minimum != null) {buton.setMinimumSize(minimum);}
-		if (preferred != null) {buton.setPreferredSize(preferred);}
-		if (maximum != null) {buton.setMaximumSize(maximum);}
+	private void setJButtonSize(JButton button, Dimension minimum, Dimension preferred, Dimension maximum) {
+		if (minimum != null) {button.setMinimumSize(minimum);}
+		if (preferred != null) {button.setPreferredSize(preferred);}
+		if (maximum != null) {button.setMaximumSize(maximum);}
 	}
 	
 	private void setJComboBoxSize (JComboBox<Item> combo, Dimension minimum, Dimension preferred, Dimension maximum) {
