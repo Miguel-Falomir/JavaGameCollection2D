@@ -8,8 +8,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -29,8 +27,8 @@ public class MenuPanel extends JPanel {
 	
 	// VARIABLES //
 	
-	private List<Dimension> gameButtonSize = new ArrayList<Dimension>();
-	private List<Dimension> optionButtonSize = new ArrayList<Dimension>();
+	private Dimension[] gameButtonSize;
+	private Dimension[] optionButtonSize;
 	
 	private GridBagConstraints gbcCentered = null;
 	
@@ -164,9 +162,9 @@ public class MenuPanel extends JPanel {
 		for (int i = 0; i < gameButtonList.length; i++) {
 			gui.setComponentSize(
 				gameButtonList[i],
-				gameButtonSize.get(0),
-				gameButtonSize.get(1),
-				gameButtonSize.get(2)
+				gameButtonSize[0],
+				gameButtonSize[1],
+				gameButtonSize[2]
 			);
 			gameButtonList[i].addActionListener(gameStarterList[i]);
 		}
@@ -189,9 +187,9 @@ public class MenuPanel extends JPanel {
 		for (JButton btn : optionButtonList) {
 			gui.setComponentSize(
 				btn,
-				optionButtonSize.get(0),
-				optionButtonSize.get(1),
-				optionButtonSize.get(2)
+				optionButtonSize[0],
+				optionButtonSize[1],
+				optionButtonSize[2]
 			);
 		}
 		// disable settings button until better implementation

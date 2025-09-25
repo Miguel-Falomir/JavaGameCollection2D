@@ -93,22 +93,22 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 	
 	// VARIABLES //
 	
-	private List<Item> gridRangeList = Arrays.asList(
+	private Item[] gridRangeList = {
 		new GridRangeItem(24),
 		new GridRangeItem(48),
 		new GridRangeItem(60)
-	);
+	};
 	
-	private List<Item> timeLapseList = Arrays.asList(
+	private Item[] timeLapseList = {
 		new TimeLapseItem(3, "0.003 s"),
 		new TimeLapseItem(100, "0.10 s"),
 		new TimeLapseItem(250, "0.25 s"),
 		new TimeLapseItem(500, "0.50 s"),
 		new TimeLapseItem(1000, "1 s"),
 		new TimeLapseItem(2000, "2 s")
-	);
+	};
 	
-	private List<Item> cellColorList = Arrays.asList(
+	private Item[] cellColorList = {
 		new CellColorItem(Color.WHITE),
 		new CellColorItem(Color.YELLOW),
 		new CellColorItem(Color.CYAN),
@@ -116,13 +116,13 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		new CellColorItem(Color.MAGENTA),
 		new CellColorItem(Color.ORANGE),
 		new CellColorItem(Color.RED)
-	);
+	};
 	
-	private List<Item> initialItemsList = Arrays.asList(
-		gridRangeList.get(1),
-		timeLapseList.get(2),
-		cellColorList.get(0)
-	);
+	private Item[] initialItemsList = {
+		gridRangeList[1],
+		timeLapseList[2],
+		cellColorList[0]
+	};
 	
 	// UI COMPONENTS //
 	
@@ -135,7 +135,6 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		super(gui);
 		
 		// with gui already initialized, give a name to each color
-		/**
 		String[] translatedColors = {
 			gui.getMessages().getString("color_White"),
 			gui.getMessages().getString("color_Yellow"),
@@ -147,10 +146,9 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		};
 		
 		for (int i = 0; i < translatedColors.length; i++) {
-			CellColorItem ceci = (CellColorItem) cellColorList.get(i);
+			CellColorItem ceci = (CellColorItem) cellColorList[i];
 			ceci.setName(translatedColors[i]);
 		}
-		*/
 		
 		// initialize 'displayPanel'
 		buildupDisplay();
@@ -254,9 +252,9 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		// set properties (coming soon...)
 		displayPanel = new GameOfLifeDisplayPanel(
 			gui,
-			((GridRangeItem) initialItemsList.get(0)).getGridRange(),
-			((TimeLapseItem) initialItemsList.get(1)).getTimeLapse(),
-			((CellColorItem) initialItemsList.get(2)).getCellColor()
+			((GridRangeItem) initialItemsList[0]).getGridRange(),
+			((TimeLapseItem) initialItemsList[1]).getTimeLapse(),
+			((CellColorItem) initialItemsList[2]).getCellColor()
 		);
 		
 		// add 'displayPanel' to 'centralPanel'
@@ -269,14 +267,14 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 	// OVERRIDE METHOD 'generateComboBox' //
 	
 	@Override
-	protected void generateComboBox(JComboBox<Item> combo, JLabel title, List<Item> list, int attributeIndex) {
+	protected void generateComboBox(JComboBox<Item> combo, JLabel title, Item[] list, int attributeIndex) {
 		// initialize
 		super.generateComboBox(combo, title, list, attributeIndex);
 		
 		// set combobox properties
 		switch (attributeIndex) {
 			case 1:	// grid range
-				combo.setSelectedItem((GridRangeItem) initialItemsList.get(0));
+				combo.setSelectedItem((GridRangeItem) initialItemsList[0]);
 				combo.addActionListener( event -> {
 					GridRangeItem selected = (GridRangeItem) combo.getSelectedItem();
 					int newGridRange = selected.getGridRange();
@@ -284,7 +282,7 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 				});
 				break;
 			case 2:	// time lapse
-				combo.setSelectedItem((TimeLapseItem) initialItemsList.get(1));
+				combo.setSelectedItem((TimeLapseItem) initialItemsList[1]);
 				combo.addActionListener( event -> {
 					TimeLapseItem selected = (TimeLapseItem) combo.getSelectedItem();
 					int newTimeLapse = selected.getTimeLapse();
@@ -292,7 +290,7 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 				});
 				break;
 			case 3:	// cell color
-				combo.setSelectedItem((CellColorItem) initialItemsList.get(2));
+				combo.setSelectedItem((CellColorItem) initialItemsList[2]);
 				combo.addActionListener( event -> {
 					CellColorItem selected = (CellColorItem) combo.getSelectedItem();
 					Color newCellColor = selected.getCellColor();

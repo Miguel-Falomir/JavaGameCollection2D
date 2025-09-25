@@ -3,7 +3,6 @@ package main.gameoflife.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -20,7 +19,7 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 	
 	// VARIABLES //
 	
-	private List<Dimension> panelSize;
+	private Dimension[] panelSize;
 	private int gridRange;
 	private int timeLapse;
 	private Color cellColor;
@@ -84,13 +83,13 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 		this.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		gui.setComponentSize(
 			this,
-			panelSize.get(0),
-			panelSize.get(1),
-			panelSize.get(2)
+			panelSize[0],
+			panelSize[1],
+			panelSize[2]
 		);
 		
 		// fulfill with labels
-		int side = (int) (panelSize.get(1).getWidth() / gridRange);
+		int side = (int) (panelSize[1].getWidth() / gridRange);
 		for (int i = 0; i < Math.pow(gridRange, 2); i++) {
 			// set cell border separately
 			MatteBorder border;

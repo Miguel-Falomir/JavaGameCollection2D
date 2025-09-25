@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.swing.BoxLayout;
@@ -72,9 +70,9 @@ public class SettingsPanel extends JPanel {
 		new LookAndFeelItem("GTK", "com.sun.java.swing.plaf.gtk.GTKLookAndFeel")
 	};
 	
-	private List<Dimension> labelSize = new ArrayList<Dimension>();
-	private List<Dimension> buttonSize = new ArrayList<Dimension>();
-	private List<Dimension> comboboxSize = new ArrayList<Dimension>();
+	private Dimension[] labelSize;
+	private Dimension[] buttonSize;
+	private Dimension[] comboboxSize;
 	
 	// UI COMPONENTS //
 	
@@ -157,16 +155,16 @@ public class SettingsPanel extends JPanel {
 		jlabel_setting_location.setText(gui.getMessages().getString("language_Label"));
 		gui.setComponentSize(
 			jlabel_setting_location,
-			labelSize.get(0),
-			labelSize.get(1),
-			labelSize.get(2)
+			labelSize[0],
+			labelSize[1],
+			labelSize[2]
 		);
 		jlabel_setting_lookandfeel.setText(gui.getMessages().getString("lookandfeel_Label"));
 		gui.setComponentSize(
 			jlabel_setting_lookandfeel,
-			labelSize.get(0),
-			labelSize.get(1),
-			labelSize.get(2)
+			labelSize[0],
+			labelSize[1],
+			labelSize[2]
 		);
 		for (LocationItem locitem : locationList) {
 			jcombo_setting_location.addItem(locitem);
@@ -196,16 +194,16 @@ public class SettingsPanel extends JPanel {
 		jbutton_back.setText(gui.getMessages().getString("back_Buton"));
 		gui.setComponentSize(
 			jbutton_back,
-			buttonSize.get(0),
-			buttonSize.get(1),
-			buttonSize.get(2)
+			buttonSize[0],
+			buttonSize[1],
+			buttonSize[2]
 		);
 		jbutton_save.setText(gui.getMessages().getString("save_Buton"));
 		gui.setComponentSize(
 			jbutton_save,
-			buttonSize.get(0),
-			buttonSize.get(1),
-			buttonSize.get(2)
+			buttonSize[0],
+			buttonSize[1],
+			buttonSize[2]
 		);
 		// add events
 		jbutton_back.addActionListener(event -> {
@@ -289,9 +287,9 @@ public class SettingsPanel extends JPanel {
 		label.setFont(label.getFont().deriveFont(18.0f));
 		gui.setComponentSize(
 			combo,
-			comboboxSize.get(0),
-			comboboxSize.get(1),
-			comboboxSize.get(2)
+			comboboxSize[0],
+			comboboxSize[1],
+			comboboxSize[2]
 		);
 		
 		// add components to 'panel'

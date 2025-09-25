@@ -5,10 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -32,12 +29,24 @@ public abstract class OptionsPanel extends JPanel {
 	
 	protected GridBagConstraints gbcCentered = null;
 	
-	protected List<Dimension> buttonSize = null;
-	protected List<Dimension> optionsPanelSize = null;
-	protected List<Dimension> optionsTitleSize = null;
-	protected List<Dimension> optionTitlePanelSize = null;
-	protected List<Dimension> optionControllerPanelSize = null;
-	protected List<Dimension> optionGapPanelSize = null;
+	protected Dimension[] buttonSize = null;
+	protected Dimension[] optionsPanelSize = null;
+	protected Dimension[]optionsTitleSize = null;
+	protected Dimension[] optionTitlePanelSize= {
+		new Dimension(200, 40),
+		new Dimension(200, 40),
+		new Dimension(200, 40)
+	};
+	protected Dimension[] optionControllerPanelSize = {
+		new Dimension(200, 25),
+		new Dimension(200, 25),
+		new Dimension(200, 25)
+	};
+	protected Dimension[] optionGapPanelSize = {
+		new Dimension(200, 20),
+		new Dimension(200, 20),
+		new Dimension(200, 20)
+	};
 	
 	// UI COMPONENTS //
 	
@@ -66,21 +75,6 @@ public abstract class OptionsPanel extends JPanel {
 		buttonSize = gui.getStandardSize(4);
 		optionsPanelSize = gui.getStandardSize(1);
 		optionsTitleSize = gui.getStandardSize(5);
-		optionTitlePanelSize = Arrays.asList(
-			new Dimension(200, 40),
-			new Dimension(200, 40),
-			new Dimension(200, 40)
-		);
-		optionControllerPanelSize = Arrays.asList(
-			new Dimension(200, 25),
-			new Dimension(200, 25),
-			new Dimension(200, 25)
-		);
-		optionGapPanelSize = Arrays.asList(
-			new Dimension(200, 20),
-			new Dimension(200, 20),
-			new Dimension(200, 20)
-		);
 		
 		// set panel layouts
 		this.setLayout(new BorderLayout());
@@ -103,18 +97,18 @@ public abstract class OptionsPanel extends JPanel {
 		// set properties
 		gui.setComponentSize(
 			optionsPanel,
-			optionsPanelSize.get(0),
-			optionsPanelSize.get(1),
-			optionsPanelSize.get(2)
+			optionsPanelSize[0],
+			optionsPanelSize[1],
+			optionsPanelSize[2]
 		);
 		
 		// top panel
 		// set properties
 		gui.setComponentSize(
 			optionsTopPanel,
-			optionsTitleSize.get(0),
-			optionsTitleSize.get(1),
-			optionsTitleSize.get(2)
+			optionsTitleSize[0],
+			optionsTitleSize[1],
+			optionsTitleSize[2]
 		);
 		// set components
 		jlabel_title = new JLabel(gui.getMessages().getString("gameoflife_Title"));
@@ -145,17 +139,17 @@ public abstract class OptionsPanel extends JPanel {
 		// set properties
 		gui.setComponentSize(
 			optionsBottomPanel,
-			optionsTitleSize.get(0),
-			optionsTitleSize.get(1),
-			optionsTitleSize.get(2)
+			optionsTitleSize[0],
+			optionsTitleSize[1],
+			optionsTitleSize[2]
 		);
 		// set components
 		jbutton_back = new JButton(gui.getMessages().getString("back_Buton"));
 		gui.setComponentSize(
 			jbutton_back,
-			buttonSize.get(0),
-			buttonSize.get(1),
-			buttonSize.get(2)
+			buttonSize[0],
+			buttonSize[1],
+			buttonSize[2]
 		);
 		jbutton_back.addActionListener( event -> {
 			gui.mockup(new MenuPanel(gui));
@@ -199,9 +193,9 @@ public abstract class OptionsPanel extends JPanel {
 		// set properties
 		gui.setComponentSize(
 			titlePanel,
-			optionTitlePanelSize.get(0),
-			optionTitlePanelSize.get(1),
-			optionTitlePanelSize.get(2)
+			optionTitlePanelSize[0],
+			optionTitlePanelSize[1],
+			optionTitlePanelSize[2]
 		);
 		// add components
 		titlePanel.add(title, BorderLayout.WEST);
@@ -210,9 +204,9 @@ public abstract class OptionsPanel extends JPanel {
 		// set properties
 		gui.setComponentSize(
 			controllerPanel,
-			optionControllerPanelSize.get(0),
-			optionControllerPanelSize.get(1),
-			optionControllerPanelSize.get(2)
+			optionControllerPanelSize[0],
+			optionControllerPanelSize[1],
+			optionControllerPanelSize[2]
 		);
 		controllerButtonPanel.setBorder(new EmptyBorder(0,10,0,0));
 		// add components
@@ -225,9 +219,9 @@ public abstract class OptionsPanel extends JPanel {
 		// set properties
 		gui.setComponentSize(
 			gapPanel,
-			optionGapPanelSize.get(0),
-			optionGapPanelSize.get(1),
-			optionGapPanelSize.get(2)
+			optionGapPanelSize[0],
+			optionGapPanelSize[1],
+			optionGapPanelSize[2]
 		);
 		// add components
 		/* just kidding, this panel is solely an empty spacer */
@@ -254,9 +248,9 @@ public abstract class OptionsPanel extends JPanel {
 		// set properties
 		gui.setComponentSize(
 			titlePanel,
-			optionTitlePanelSize.get(0),
-			optionTitlePanelSize.get(1),
-			optionTitlePanelSize.get(2)
+			optionTitlePanelSize[0],
+			optionTitlePanelSize[1],
+			optionTitlePanelSize[2]
 		);
 		// add components
 		titlePanel.add(title, BorderLayout.WEST);
@@ -275,9 +269,9 @@ public abstract class OptionsPanel extends JPanel {
 		} else {			
 			gui.setComponentSize(
 				controllerPanel,
-				optionControllerPanelSize.get(0),
-				optionControllerPanelSize.get(1),
-				optionControllerPanelSize.get(2)
+				optionControllerPanelSize[0],
+				optionControllerPanelSize[1],
+				optionControllerPanelSize[2]
 			);
 		}
 		// add components
@@ -287,9 +281,9 @@ public abstract class OptionsPanel extends JPanel {
 		// set properties
 		gui.setComponentSize(
 			gapPanel,
-			optionGapPanelSize.get(0),
-			optionGapPanelSize.get(1),
-			optionGapPanelSize.get(2)
+			optionGapPanelSize[0],
+			optionGapPanelSize[1],
+			optionGapPanelSize[2]
 		);
 		// add components
 		/* just kidding, this panel is solely an empty spacer */
@@ -302,7 +296,7 @@ public abstract class OptionsPanel extends JPanel {
 	
 	// METHOD GENERATE COMBO BOX //
 	
-	protected void generateComboBox(JComboBox<Item> combo, JLabel title, List<Item> list, int attributeIndex) {
+	protected void generateComboBox(JComboBox<Item> combo, JLabel title, Item[] list, int attributeIndex) {
 		// declare panels
 		JPanel titlePanel = new JPanel(new BorderLayout());
 		JPanel controllerPanel = new JPanel(new BorderLayout());
@@ -312,9 +306,9 @@ public abstract class OptionsPanel extends JPanel {
 		// set properties
 		gui.setComponentSize(
 			titlePanel,
-			optionTitlePanelSize.get(0),
-			optionTitlePanelSize.get(1),
-			optionTitlePanelSize.get(2)
+			optionTitlePanelSize[0],
+			optionTitlePanelSize[1],
+			optionTitlePanelSize[2]
 		);
 		// set components
 		title.setFont(title.getFont().deriveFont(18.0f));
@@ -325,9 +319,9 @@ public abstract class OptionsPanel extends JPanel {
 		// set properties
 		gui.setComponentSize(
 			controllerPanel,
-			optionControllerPanelSize.get(0),
-			optionControllerPanelSize.get(1),
-			optionControllerPanelSize.get(2)
+			optionControllerPanelSize[0],
+			optionControllerPanelSize[1],
+			optionControllerPanelSize[2]
 		);
 		// set components
 		for (Item item : list) {
@@ -342,9 +336,9 @@ public abstract class OptionsPanel extends JPanel {
 		// set components
 		gui.setComponentSize(
 			gapPanel,
-			optionGapPanelSize.get(0),
-			optionGapPanelSize.get(1),
-			optionGapPanelSize.get(2)
+			optionGapPanelSize[0],
+			optionGapPanelSize[1],
+			optionGapPanelSize[2]
 		);
 		// add components
 		/* just kidding, this panel is solely an empty spacer */
@@ -357,7 +351,7 @@ public abstract class OptionsPanel extends JPanel {
 	
 	// METHOD GENERATE CHECK BOXES LIST //
 	
-	protected void generateCheckBoxesList(ArrayList<JCheckBox> check, JLabel title, List<Item> list, int attributeIndex) {
+	protected void generateCheckBoxesList(ArrayList<JCheckBox> check, JLabel title, Item[] list, int attributeIndex) {
 		// declare panels
 		JPanel titlePanel = new JPanel(new BorderLayout());
 		JPanel controllerPanel = new JPanel();
@@ -379,16 +373,16 @@ public abstract class OptionsPanel extends JPanel {
 		// set properties
 		gui.setComponentSize(
 			titlePanel,
-			optionTitlePanelSize.get(0),
-			optionTitlePanelSize.get(1),
-			optionTitlePanelSize.get(2)
+			optionTitlePanelSize[0],
+			optionTitlePanelSize[1],
+			optionTitlePanelSize[2]
 		);
 		// add components
 		titlePanel.add(title, BorderLayout.WEST);
 		
 		// toggle buttons list panel
 		// set properties
-		int height = 30 * list.size();
+		int height = 30 * list.length;
 		gui.setComponentSize(
 			controllerPanel,
 			new Dimension(200, height),
@@ -406,9 +400,9 @@ public abstract class OptionsPanel extends JPanel {
 		// set properties
 		gui.setComponentSize(
 			gapPanel,
-			optionGapPanelSize.get(0),
-			optionGapPanelSize.get(1),
-			optionGapPanelSize.get(2)
+			optionGapPanelSize[0],
+			optionGapPanelSize[1],
+			optionGapPanelSize[2]
 		);
 		// add components
 		/* just kidding, this panel is solely an empty spacer */

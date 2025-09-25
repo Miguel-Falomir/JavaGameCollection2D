@@ -46,41 +46,41 @@ public class Gui extends JFrame {
 	String country = null;
 	String lookandfeel = null;
 	
-	List<Dimension> optionsPanelSize = Arrays.asList(
+	Dimension[] optionsPanelSize = {
 		new Dimension(300, 300),
 		new Dimension(300, 300),
 		new Dimension(300, 300)
-	);
-	List<Dimension> squaredPanelSize = Arrays.asList(
+	};
+	Dimension[] squaredPanelSize = {
 		new Dimension(480, 480),
 		new Dimension(480, 480),
 		new Dimension(480, 480)
-	);
-	List<Dimension> panoramicPanelSize = Arrays.asList(
+	};
+	Dimension[] panoramicPanelSize = {
 		new Dimension(560, 420),
 		new Dimension(560, 420),
 		new Dimension(560, 420)
-	);
-	List<Dimension> normalButtonSize = Arrays.asList(
+	};
+	Dimension[] normalButtonSize = {
 		new Dimension(100, 50),	// minimum size
 		new Dimension(100, 50),	// preferred size
 		new Dimension(200, 100)	// maximum size
-	);
-	List<Dimension> squaredButtonSize = Arrays.asList(
+	};
+	Dimension[] squaredButtonSize = {
 		new Dimension(100, 100),
 		new Dimension(100, 100),
 		new Dimension(200, 200)
-	);
-	List<Dimension> miniButtonSize = Arrays.asList(
+	};
+	Dimension[] miniButtonSize = {
 		new Dimension(50, 20),
 		new Dimension(50, 20),
 		new Dimension(50, 20)
-	);
-	List<Dimension> comboboxSize = Arrays.asList(
+	};
+	Dimension[] comboboxSize = {
 		new Dimension(150, 30),
 		new Dimension(150, 30),
 		new Dimension(300, 60)
-	);
+	};
 	
 	GridBagConstraints gridBagConstraintsCentered = new GridBagConstraints(
 		0,							// gridX (fila posicion)
@@ -150,7 +150,7 @@ public class Gui extends JFrame {
 		return messages;
 	}
 	
-	public List<Dimension> getStandardSize(int index) {
+	public Dimension[] getStandardSize(int index) {
 		switch (index) {
 			case 1: 
 				return optionsPanelSize;
