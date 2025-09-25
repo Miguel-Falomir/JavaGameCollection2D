@@ -2,6 +2,7 @@ package main.gameoflife.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
@@ -237,6 +238,49 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 			pan.add(button, gbcCentered);
 			pauseMenuPanel.add(pan);
 		}
+		
+		// add action listener for each button separately
+		/**
+		 * As each index has the same number as their desired status,
+		 * I tried to implement all of this in the foreach (after turning
+		 * it a for loop, of course).
+		 * Result:
+		 * 'i' counter throws exception because it is supposed to be some
+		 * kind of "final" variable. I didn't understand the error, only
+		 * that it would force me to bungle this workaround.
+		 */
+		buttonArray[0].addActionListener( event -> {	// stop
+			displayPanel.setStatus(0);
+			/**
+			 * These bidimensional loops happen because each controller is actually
+			 * a group of components within their own JPanel(s). That is, for each
+			 * component, the route is JPanel -> JPanel -> Component
+			 */
+			for (Component comp_1 : optionsCenterCenterPanel.getComponents()) {
+				JPanel pan = (JPanel) comp_1;
+				for (Component comp_2 : pan.getComponents()) {
+					comp_2.setEnabled(true);
+				}
+			}
+		});
+		buttonArray[1].addActionListener( event -> {	// pause
+			displayPanel.setStatus(1);
+			for (Component comp_1 : optionsCenterCenterPanel.getComponents()) {
+				JPanel pan = (JPanel) comp_1;
+				for (Component comp_2 : pan.getComponents()) {
+					comp_2.setEnabled(true);
+				}
+			}
+		});
+		buttonArray[2].addActionListener( event -> {	// resume
+			displayPanel.setStatus(2);
+			for (Component comp_1 : optionsCenterCenterPanel.getComponents()) {
+				JPanel pan = (JPanel) comp_1;
+				for (Component comp_2 : pan.getComponents()) {
+					comp_2.setEnabled(false);
+				}
+			}
+		});
 		
 		// add 'pauseMenuPanel' to 'optionsCenterBottomPanel'
 		optionsCenterBottomPanel.add(pauseMenuPanel, gbcCentered);

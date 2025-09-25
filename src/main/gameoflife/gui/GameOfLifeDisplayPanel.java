@@ -3,6 +3,10 @@ package main.gameoflife.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -17,12 +21,63 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 
 	private static final long serialVersionUID = -8049480235816106864L;
 	
+	// CUSTOM CLASS FOR GAME OF LIFE CELLS //
+	
+	private class CellPanel extends JPanel implements MouseListener {
+		// attributes
+		private GameOfLifeDisplayPanel display;
+		private boolean life;
+		private Color liveColor;
+		private Color deadColor;
+		// getters and setters
+		public void setLiveColor(Color liveColor) {this.liveColor = liveColor;}
+		public void setCellColor() {
+			life = !life;
+			this.setBackground((life) ? liveColor : deadColor);
+		}
+		// constructor
+		public CellPanel(GameOfLifeDisplayPanel display, Color lifeColor) {
+			this.display = display;
+			this.life = false;
+			this.liveColor = lifeColor;
+			this.deadColor = Color.BLACK;
+			this.addMouseListener(this);
+		}
+		// action listener(s)
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			///System.out.println("hace click");
+		}
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			///System.out.println("Pone el ratón encima");
+		}
+		@Override
+		public void mouseExited(MouseEvent e) {
+			///System.out.println("Quita el ratón");
+		}
+		@Override
+		public void mousePressed(MouseEvent e) {
+			///System.out.println("Empieza a presionar el botón");
+			int status = display.getStatus();
+			if (status < 2) {
+				setCellColor();
+			}
+		}
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			///System.out.println("Suelta el botón");
+		}
+
+	}
+	
 	// VARIABLES //
 	
 	private Dimension[] panelSize;
 	private int gridRange;
 	private int timeLapse;
 	private Color cellColor;
+	private int status; /* 0: stop / 1: pause / 2: resume */
 	
 	// UI COMPONENTS //
 	
@@ -56,6 +111,14 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 		update();
 	}
 	
+	public synchronized int getStatus() {
+		return status;
+	}
+	
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	
 	// CONSTRUCTOR //
 
 	public GameOfLifeDisplayPanel(Gui gui, int gridRange, int timeLapse, Color cellColor) {
@@ -67,6 +130,7 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 		this.gridRange = gridRange;
 		this.timeLapse = timeLapse;
 		this.cellColor = cellColor;
+		this.status = 0;
 		
 		// build UI components
 		buildup();
@@ -103,7 +167,7 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 				border = new MatteBorder(0, 0, 1, 1, Color.WHITE);
 			}
 			// intialize cell
-			JPanel cell = new JPanel();
+			CellPanel cell = new CellPanel(this, cellColor);
 			gui.setComponentSize(
 				cell,
 				new Dimension(side,side),
