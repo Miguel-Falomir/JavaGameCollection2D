@@ -1,6 +1,7 @@
 package main.gameoflife.gui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -13,9 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 
 import main.Gui;
-import main.utilities.DisplayPanel;
+import main.utilities.GameDisplay;
 
-public class GameOfLifeDisplayPanel extends DisplayPanel {
+public class GameOfLifeDisplay extends GameDisplay {
 	
 	// SERIAL VERSION IDENTIFIER //
 
@@ -25,7 +26,7 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 	
 	private class CellPanel extends JPanel implements MouseListener {
 		// attributes
-		private GameOfLifeDisplayPanel display;
+		private GameOfLifeDisplay display;
 		private boolean life;
 		private Color liveColor;
 		private Color deadColor;
@@ -36,7 +37,7 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 			this.setBackground((life) ? liveColor : deadColor);
 		}
 		// constructor
-		public CellPanel(GameOfLifeDisplayPanel display, Color lifeColor) {
+		public CellPanel(GameOfLifeDisplay display, Color lifeColor) {
 			this.display = display;
 			this.life = false;
 			this.liveColor = lifeColor;
@@ -121,7 +122,7 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 	
 	// CONSTRUCTOR //
 
-	public GameOfLifeDisplayPanel(Gui gui, int gridRange, int timeLapse, Color cellColor) {
+	public GameOfLifeDisplay(Gui gui, int gridRange, int timeLapse, Color cellColor) {
 		// set ui components
 		this.gui = gui;
 		

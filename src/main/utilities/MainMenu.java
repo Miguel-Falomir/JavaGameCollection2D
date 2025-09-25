@@ -16,10 +16,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import main.Gui;
-import main.gameoflife.gui.GameOfLifeOptionsPanel;
+import main.gameoflife.gui.GameOfLifeMenu;
+import main.gameoflife.gui.GameOfLifeThread;
 //import main.gameoflife.gui.ScreenPanel;
 
-public class MenuPanel extends JPanel {
+public class MainMenu extends JPanel {
 	
 	// SERIAL VERSION IDENTIFIER //
 
@@ -57,7 +58,7 @@ public class MenuPanel extends JPanel {
 	
 	// CONSTRUCTOR //
 	
-	public MenuPanel (Gui gui) {
+	public MainMenu (Gui gui) {
 		// set main frame
 		this.gui = gui;
 		
@@ -108,7 +109,9 @@ public class MenuPanel extends JPanel {
 			new ActionListener() { // game of life (J.H.Conway)
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					gui.mockup(new GameOfLifeOptionsPanel(gui));
+					new Thread(
+						new GameOfLifeThread(gui)
+					).start();
 				}
 			},
 			new ActionListener() { // snake
@@ -196,7 +199,7 @@ public class MenuPanel extends JPanel {
 		optionButtonList[0].setEnabled(true);
 		// add events
 		optionButtonList[0].addActionListener(event -> {
-			gui.mockup(new SettingsPanel(gui));
+			gui.mockup(new SettingsMenu(gui));
 		});
 		optionButtonList[1].addActionListener(event -> {
 			setVisible(false);

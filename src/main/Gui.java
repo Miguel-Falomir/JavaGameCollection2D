@@ -30,7 +30,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import main.utilities.Item;
-import main.utilities.MenuPanel;
+import main.utilities.MainMenu;
 
 public class Gui extends JFrame {
 	
@@ -214,7 +214,7 @@ public class Gui extends JFrame {
 		
 		// build UI components
 		cont = this.getContentPane();
-		mockup( new MenuPanel(this));
+		mockup( new MainMenu(this));
 		
 		// adjust screen size to components
 		// or not, because if there is no component at all the window resizes to 0x0

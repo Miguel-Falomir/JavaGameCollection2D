@@ -2,7 +2,7 @@ package main.utilities;
 
 import javax.swing.JPanel;
 
-public abstract class DisplayPanel extends JPanel {
+public abstract class GameDisplay extends JPanel {
 	
 	// SERIAL VERSION IDENTIFIER //
 

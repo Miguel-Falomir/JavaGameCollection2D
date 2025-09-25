@@ -16,7 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 import main.Gui;
 
-public class SettingsPanel extends JPanel {
+public class SettingsMenu extends JPanel {
 	
 	// SERIAL VERSION IDENTIFIER //
 
@@ -104,7 +104,7 @@ public class SettingsPanel extends JPanel {
 	
 	// CONSTRUCTOR //
 	
-	public SettingsPanel (Gui gui) {
+	public SettingsMenu (Gui gui) {
 		// set ui components
 		this.gui = gui;
 		
@@ -208,11 +208,11 @@ public class SettingsPanel extends JPanel {
 		// add events
 		jbutton_back.addActionListener(event -> {
 			gui.readSettings();
-			gui.mockup(new MenuPanel(gui));
+			gui.mockup(new MainMenu(gui));
 		});
 		jbutton_save.addActionListener(event -> {
 			gui.writeSettings();
-			gui.mockup(new MenuPanel(gui));
+			gui.mockup(new MainMenu(gui));
 		});
 		// add components
 		jpanel_gridbag[0].add(jbutton_back, gui.getGridBagConstraintsCentered());

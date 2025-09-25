@@ -17,9 +17,9 @@ import javax.swing.JPanel;
 
 import main.Gui;
 import main.utilities.Item;
-import main.utilities.OptionsPanel;
+import main.utilities.GameMenu;
 
-public class GameOfLifeOptionsPanel extends OptionsPanel{
+public class GameOfLifeMenu extends GameMenu{
 	
 	// SERIAL VERSION IDENTIFIER //
 
@@ -67,31 +67,6 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		}
 	}
 	
-	// INHERITED //
-	
-	///protected GridBagConstraints gbcCentered = null;
-
-	///protected List<Dimension> buttonSize = null;
-	///protected List<Dimension> optionsPanelSize = null;
-	///protected List<Dimension> optionsTitleSize = null;
-	///protected List<Dimension> optionTitlePanelSize = null;
-	///protected List<Dimension> optionControllerPanelSize = null;
-	///protected List<Dimension> optionGapPanelSize = null;
-	
-	///protected Gui gui = null;
-	
-	///protected JPanel centralPanel = null;
-	///protected JPanel optionsPanel = null;
-	///protected JPanel optionsTopPanel = null;
-	///protected JPanel optionsCenterPanel = null;
-	///protected JPanel optionsCenterCenterPanel = null;
-	///protected JPanel optionsCenterBottomPanel = null;
-	///protected JPanel optionsBottomPanel = null;
-	
-	///protected JLabel jlabel_title = null;
-	
-	///protected JButton jbutton_back = null;
-	
 	// VARIABLES //
 	
 	private Item[] gridRangeList = {
@@ -127,11 +102,17 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 	
 	// UI COMPONENTS //
 	
-	private GameOfLifeDisplayPanel displayPanel = null;
+	private GameOfLifeDisplay display = null;
+	
+	// GETTERS AND SETTERS //
+	
+	public synchronized GameOfLifeDisplay getDisplay() {
+		return display;
+	}
 	
 	// CONSTRUCTOR //
 
-	public GameOfLifeOptionsPanel(Gui gui) {
+	public GameOfLifeMenu(Gui gui) {
 		// initialize attributes from parent class
 		super(gui);
 		
@@ -155,15 +136,15 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		buildupDisplay();
 		
 		// add components to 'optionsPanel'
-		buildupOptions();
+		buildupMenu();
 	}
 	
 	// OVERRIDE METHOD 'buildupOptions' //
 	
 	@Override
-	protected void buildupOptions() {
+	protected void buildupMenu() {
 		// initialize and compose panels of both title and back button
-		super.buildupOptions();
+		super.buildupMenu();
 		
 		// add controllers to 'optionsCenterCenterPanel'
 		/**
@@ -197,16 +178,6 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		);
 		
 		// add a pause menu to 'optionsCenterBottomPanel'
-		buildupPauseMenu();
-	}
-	
-	// OVERRIDE METHOD 'buildupPauseMenu' //
-	
-	@Override
-	protected void buildupPauseMenu() {
-		// initialize (despite this method is supposed to be empty...)
-		super.buildupPauseMenu();
-		
 		// declare components
 		JPanel pauseMenuPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
 		JButton[] buttonArray = {
@@ -214,7 +185,6 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 			new JButton("||"),
 			new JButton("!>")
 		};
-		
 		// set panel properties
 		gui.setComponentSize(
 			pauseMenuPanel,
@@ -222,7 +192,6 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 			new Dimension(300, 40),
 			new Dimension(300, 40)
 		);
-		
 		// add buttons to 'pauseMenuPanel'
 		for (JButton button : buttonArray) {
 			// button properties
@@ -250,7 +219,7 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		 * that it would force me to bungle this workaround.
 		 */
 		buttonArray[0].addActionListener( event -> {	// stop
-			displayPanel.setStatus(0);
+			display.setStatus(0);
 			/**
 			 * These bidimensional loops happen because each controller is actually
 			 * a group of components within their own JPanel(s). That is, for each
@@ -264,7 +233,7 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 			}
 		});
 		buttonArray[1].addActionListener( event -> {	// pause
-			displayPanel.setStatus(1);
+			display.setStatus(1);
 			for (Component comp_1 : optionsCenterCenterPanel.getComponents()) {
 				JPanel pan = (JPanel) comp_1;
 				for (Component comp_2 : pan.getComponents()) {
@@ -272,8 +241,8 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 				}
 			}
 		});
-		buttonArray[2].addActionListener( event -> {	// resume
-			displayPanel.setStatus(2);
+		buttonArray[2].addActionListener( event -> {	// start/resume
+			display.setStatus(2);
 			for (Component comp_1 : optionsCenterCenterPanel.getComponents()) {
 				JPanel pan = (JPanel) comp_1;
 				for (Component comp_2 : pan.getComponents()) {
@@ -294,7 +263,7 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		super.buildupDisplay();
 		
 		// set properties (coming soon...)
-		displayPanel = new GameOfLifeDisplayPanel(
+		display = new GameOfLifeDisplay(
 			gui,
 			((GridRangeItem) initialItemsList[0]).getGridRange(),
 			((TimeLapseItem) initialItemsList[1]).getTimeLapse(),
@@ -302,7 +271,7 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		);
 		
 		// add 'displayPanel' to 'centralPanel'
-		centralPanel.add(displayPanel, gbcCentered);
+		centralPanel.add(display, gbcCentered);
 		
 		// add 'centralPanel' to screen
 		this.add(centralPanel, BorderLayout.CENTER);
@@ -322,7 +291,7 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 				combo.addActionListener( event -> {
 					GridRangeItem selected = (GridRangeItem) combo.getSelectedItem();
 					int newGridRange = selected.getGridRange();
-					displayPanel.setGridRange(newGridRange);
+					display.setGridRange(newGridRange);
 				});
 				break;
 			case 2:	// time lapse
@@ -330,7 +299,7 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 				combo.addActionListener( event -> {
 					TimeLapseItem selected = (TimeLapseItem) combo.getSelectedItem();
 					int newTimeLapse = selected.getTimeLapse();
-					displayPanel.setTimeLapse(newTimeLapse);
+					display.setTimeLapse(newTimeLapse);
 				});
 				break;
 			case 3:	// cell color
@@ -338,7 +307,7 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 				combo.addActionListener( event -> {
 					CellColorItem selected = (CellColorItem) combo.getSelectedItem();
 					Color newCellColor = selected.getCellColor();
-					displayPanel.setCellColor(newCellColor);
+					display.setCellColor(newCellColor);
 				});
 				break;
 			default:

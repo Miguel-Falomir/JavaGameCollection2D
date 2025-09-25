@@ -19,7 +19,7 @@ import javax.swing.border.EmptyBorder;
 
 import main.Gui;
 
-public abstract class OptionsPanel extends JPanel {
+public abstract class GameMenu extends JPanel {
 	
 	// SERIAL VERSION IDENTIFIER //
 
@@ -66,7 +66,7 @@ public abstract class OptionsPanel extends JPanel {
 	
 	// CONSTRUCTOR //
 	
-	public OptionsPanel(Gui gui) {
+	public GameMenu(Gui gui) {
 		// set ui components
 		this.gui = gui;
 		
@@ -92,7 +92,7 @@ public abstract class OptionsPanel extends JPanel {
 	
 	// METHOD BUILDUP OPTIONS PANEL //
 	
-	protected void buildupOptions() {
+	protected void buildupMenu() {
 		// main panel
 		// set properties
 		gui.setComponentSize(
@@ -152,7 +152,7 @@ public abstract class OptionsPanel extends JPanel {
 			buttonSize[2]
 		);
 		jbutton_back.addActionListener( event -> {
-			gui.mockup(new MenuPanel(gui));
+			gui.mockup(new MainMenu(gui));
 		});
 		// add components
 		optionsBottomPanel.add(jbutton_back);
@@ -164,13 +164,13 @@ public abstract class OptionsPanel extends JPanel {
 		this.add(optionsPanel, BorderLayout.WEST);
 	}
 	
-	// METHOD BUILDUP PAUSE MENU //
-	
-	protected void buildupPauseMenu() {}
-	
 	// METHOD BUILDUP DISPLAY PANEL //
 	
 	protected void buildupDisplay() {}
+	
+	// METHOD EXECUTE GAME THREAD //
+	
+	protected void executeThread() {}
 	
 	// METHOD GENERATE TEXTAREA COMPONENT //
 	
