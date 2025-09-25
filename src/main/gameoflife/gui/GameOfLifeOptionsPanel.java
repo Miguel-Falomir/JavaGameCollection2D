@@ -1,21 +1,18 @@
 package main.gameoflife.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
 
 import main.Gui;
 import main.utilities.Item;
@@ -32,11 +29,8 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 	private class GridRangeItem extends Item {
 		// attributes
 		private int gridRange;
-		
 		// getters and setters
-		public void setName(String name) {this.name = name;}
 		public int getGridRange() {return gridRange;}
-		
 		// constructor
 		public GridRangeItem(int gridRange) {
 			this.id = String.valueOf(gridRange);
@@ -45,15 +39,30 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		}
 	}
 	
-	private class CheckBoxItem extends Item {
+	private class TimeLapseItem extends Item {
+		// attributes
+		private int timeLapse;
 		// getters and setters
-		public String getId() {return id;}
-		public String getName() {return name;}
-		
+		public int getTimeLapse() {return timeLapse;}
 		// constructor
-		public CheckBoxItem (String id, String name) {
-			this.id = id;
+		public TimeLapseItem(int timeLapse, String name) {
+			this.id = String.valueOf(timeLapse);
 			this.name = name;
+			this.timeLapse = timeLapse;
+		}
+	}
+	
+	private class CellColorItem extends Item {
+		// attributes
+		private Color cellColor;
+		// getters and setters
+		public Color getCellColor() {return cellColor;}
+		public void setName(String name) {this.name = name;}
+		// constructor
+		public CellColorItem(Color cellColor) {
+			this.id = String.valueOf(cellColor);
+			this.name = String.valueOf(cellColor);
+			this.cellColor = cellColor;
 		}
 	}
 	
@@ -90,6 +99,31 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		new GridRangeItem(60)
 	);
 	
+	private List<Item> timeLapseList = Arrays.asList(
+		new TimeLapseItem(3, "0.003 s"),
+		new TimeLapseItem(100, "0.10 s"),
+		new TimeLapseItem(250, "0.25 s"),
+		new TimeLapseItem(500, "0.50 s"),
+		new TimeLapseItem(1000, "1 s"),
+		new TimeLapseItem(2000, "2 s")
+	);
+	
+	private List<Item> cellColorList = Arrays.asList(
+		new CellColorItem(Color.WHITE),
+		new CellColorItem(Color.YELLOW),
+		new CellColorItem(Color.CYAN),
+		new CellColorItem(Color.GREEN),
+		new CellColorItem(Color.MAGENTA),
+		new CellColorItem(Color.ORANGE),
+		new CellColorItem(Color.RED)
+	);
+	
+	private List<Item> initialItemsList = Arrays.asList(
+		gridRangeList.get(1),
+		timeLapseList.get(2),
+		cellColorList.get(0)
+	);
+	
 	// UI COMPONENTS //
 	
 	private GameOfLifeDisplayPanel displayPanel = null;
@@ -99,6 +133,24 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 	public GameOfLifeOptionsPanel(Gui gui) {
 		// initialize attributes from parent class
 		super(gui);
+		
+		// with gui already initialized, give a name to each color
+		/**
+		String[] translatedColors = {
+			gui.getMessages().getString("color_White"),
+			gui.getMessages().getString("color_Yellow"),
+			gui.getMessages().getString("color_Cyan"),
+			gui.getMessages().getString("color_Green"),
+			gui.getMessages().getString("color_Magenta"),
+			gui.getMessages().getString("color_Orange"),
+			gui.getMessages().getString("color_Red")
+		};
+		
+		for (int i = 0; i < translatedColors.length; i++) {
+			CellColorItem ceci = (CellColorItem) cellColorList.get(i);
+			ceci.setName(translatedColors[i]);
+		}
+		*/
 		
 		// initialize 'displayPanel'
 		buildupDisplay();
@@ -131,20 +183,18 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 			1
 		);
 		
-		generateSlider(
-			new JSlider(3, 1000, displayPanel.getTimeLapse()),
+		generateComboBox(
+			new JComboBox<Item>(),
 			new JLabel(gui.getMessages().getString("gameoflife_TimeLapse_Label")),
-			new JLabel(String.valueOf(displayPanel.getTimeLapse()) + " ms"),
-			false,
-			1
+			timeLapseList,
+			2
 		);
 
-		generateSlider(
-			new JSlider(1, 5, displayPanel.getMaxLife()),
-			new JLabel(gui.getMessages().getString("gameoflife_MaxLife_Label")),
-			new JLabel(String.valueOf(displayPanel.getMaxLife())),
-			true,
-			2
+		generateComboBox(
+			new JComboBox<Item>(),
+			new JLabel(gui.getMessages().getString("gameoflife_CellColor_Label")),
+			cellColorList,
+			3
 		);
 		
 		// add a pause menu to 'optionsCenterBottomPanel'
@@ -161,11 +211,9 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		// declare components
 		JPanel pauseMenuPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
 		JButton[] buttonArray = {
-			new JButton("<<"),
 			new JButton("[]"),
 			new JButton("||"),
-			new JButton("!>"),
-			new JButton(">>")
+			new JButton("!>")
 		};
 		
 		// set panel properties
@@ -204,85 +252,18 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		super.buildupDisplay();
 		
 		// set properties (coming soon...)
-		displayPanel = new GameOfLifeDisplayPanel(gui);
+		displayPanel = new GameOfLifeDisplayPanel(
+			gui,
+			((GridRangeItem) initialItemsList.get(0)).getGridRange(),
+			((TimeLapseItem) initialItemsList.get(1)).getTimeLapse(),
+			((CellColorItem) initialItemsList.get(2)).getCellColor()
+		);
 		
 		// add 'displayPanel' to 'centralPanel'
 		centralPanel.add(displayPanel, gbcCentered);
 		
 		// add 'centralPanel' to screen
 		this.add(centralPanel, BorderLayout.CENTER);
-	}
-	
-	// OVERRIDE METHOD 'generateTextArea' //
-	
-	@Override
-	protected void generateTextField(JTextField textfield, JLabel title, JButton button, int attributeIndex) {
-		// initialize
-		super.generateTextField(textfield, title, button, attributeIndex);
-		
-		// set textfield properties
-		textfield.setText("value");
-		
-		// use switch-case as a selector to add one or other action listener
-		switch (attributeIndex) {
-			case 1: {
-				button.addActionListener( event -> {
-					String value = textfield.getText();
-					System.out.println(value);
-				});
-				break;
-			}
-			default:
-				throw new IllegalArgumentException("Unexpected value: " + attributeIndex);
-		}
-	}
-	
-	// OVERRIDE METHOD 'generateSlider' //
-	
-	@Override
-	protected void generateSlider(JSlider slider, JLabel title, JLabel value, boolean useTicks, int attributeIndex) {
-		// initialize
-		super.generateSlider(slider, title, value, useTicks, attributeIndex);
-		
-		// use switch-case as a selector of one or other configuration
-		/**
-		 * This is the simplest solution I could come with. I wish I knew more about
-		 * lambda expressions, but even in that case all StackOverflow solutions seemed
-		 * to be too much verbose for me. For those who doesn't know (I googled it 10
-		 * minutes before writing this comment) verbosity is the abundance or excess of
-		 * word, for instance:
-		 * (normal)  Karen drives a big car.
-		 * (verbose) The woman named Karen happens to get herself to places by driving a car of big proportions.
-		 */
-		switch (attributeIndex) {
-			case 1:	// time lapse slider
-				slider.addChangeListener( event -> {
-					int number = slider.getValue();
-					value.setText(String.valueOf(number) + " ms");
-					displayPanel.setTimeLapse(number);
-				});
-				if (useTicks) {			
-					slider.setMinorTickSpacing(50);
-					slider.setMajorTickSpacing(250);
-					slider.setPaintTicks(true);
-					slider.setPaintLabels(true);
-				}
-				break;
-			case 2:	// max life slider
-				slider.addChangeListener( event -> {
-					int number = slider.getValue();
-					value.setText(String.valueOf(number));
-					displayPanel.setMaxLife(number);
-				});
-				if (useTicks) {			
-					slider.setMajorTickSpacing(1);
-					slider.setPaintTicks(true);
-					slider.setPaintLabels(true);
-				}
-				break;
-			default:
-				throw new IllegalArgumentException("Unexpected value: " + attributeIndex);
-		}
 	}
 	
 	// OVERRIDE METHOD 'generateComboBox' //
@@ -293,48 +274,34 @@ public class GameOfLifeOptionsPanel extends OptionsPanel{
 		super.generateComboBox(combo, title, list, attributeIndex);
 		
 		// set combobox properties
-		combo.setSelectedItem(list.get(2));
-		
-		// add action listener
-		/**
-		 * why would I bundle various listeners within one switch-case, if I only need
-		 * to use one combobox for this very case? And what the hell took me this long
-		 * to realize? >:(
-		 */
-		combo.addActionListener( event -> {
-			GridRangeItem selected = (GridRangeItem) combo.getSelectedItem();
-			int newGridRange = selected.getGridRange();
-			displayPanel.setGridRange(newGridRange);
-		});
-	}
-	
-	// OVERRIDE METHOD 'generateCheckBoxesList' //
-	
-	@Override
-	protected void generateCheckBoxesList(ArrayList<JCheckBox> check, JLabel title, List<Item> list, int attributeIndex) {
-		// initialize
-		super.generateCheckBoxesList(check, title, list, attributeIndex);
-		
-		// set each check box properties
-		/* just in case... */
-		
-		// use switch-case as a selector to add one or other action listener
 		switch (attributeIndex) {
-			case 1:
-				for (JCheckBox box : check) {
-					box.addActionListener( event -> {
-						for (int i = 0; i < check.size(); i++) {						
-							if (check.get(i).isSelected()) {
-								CheckBoxItem item = (CheckBoxItem) list.get(i);
-								System.out.println(item.getName());
-							}
-						}
-					});
-				}
+			case 1:	// grid range
+				combo.setSelectedItem((GridRangeItem) initialItemsList.get(0));
+				combo.addActionListener( event -> {
+					GridRangeItem selected = (GridRangeItem) combo.getSelectedItem();
+					int newGridRange = selected.getGridRange();
+					displayPanel.setGridRange(newGridRange);
+				});
+				break;
+			case 2:	// time lapse
+				combo.setSelectedItem((TimeLapseItem) initialItemsList.get(1));
+				combo.addActionListener( event -> {
+					TimeLapseItem selected = (TimeLapseItem) combo.getSelectedItem();
+					int newTimeLapse = selected.getTimeLapse();
+					displayPanel.setTimeLapse(newTimeLapse);
+				});
+				break;
+			case 3:	// cell color
+				combo.setSelectedItem((CellColorItem) initialItemsList.get(2));
+				combo.addActionListener( event -> {
+					CellColorItem selected = (CellColorItem) combo.getSelectedItem();
+					Color newCellColor = selected.getCellColor();
+					displayPanel.setCellColor(newCellColor);
+				});
 				break;
 			default:
 				throw new IllegalArgumentException("Unexpected value: " + attributeIndex);
 		}
-	}
 
+	}
 }

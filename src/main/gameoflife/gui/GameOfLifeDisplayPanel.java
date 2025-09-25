@@ -6,8 +6,6 @@ import java.awt.GridLayout;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 
@@ -25,7 +23,7 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 	private List<Dimension> panelSize;
 	private int gridRange;
 	private int timeLapse;
-	private int maxLife;
+	private Color cellColor;
 	
 	// UI COMPONENTS //
 	
@@ -50,25 +48,26 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 		this.timeLapse = timeLapse;
 	}
 	
-	public int getMaxLife() {
-		return maxLife;
+	public Color getCellColor() {
+		return cellColor;
 	}
 	
-	public void setMaxLife(int maxLife) {
-		this.maxLife = maxLife;
+	public void setCellColor(Color cellColor) {
+		this.cellColor = cellColor;
+		update();
 	}
 	
 	// CONSTRUCTOR //
 
-	public GameOfLifeDisplayPanel(Gui gui) {
+	public GameOfLifeDisplayPanel(Gui gui, int gridRange, int timeLapse, Color cellColor) {
 		// set ui components
 		this.gui = gui;
 		
 		// set variables
-		panelSize = gui.getStandardSize(2);
-		gridRange = 60;
-		timeLapse = 250;
-		maxLife = 1;
+		this.panelSize = gui.getStandardSize(2);
+		this.gridRange = gridRange;
+		this.timeLapse = timeLapse;
+		this.cellColor = cellColor;
 		
 		// build UI components
 		buildup();
@@ -82,7 +81,6 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 		this.setLayout(new GridLayout(gridRange, gridRange));
 		
 		// set properties
-		///this.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
 		this.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 		gui.setComponentSize(
 			this,
@@ -90,8 +88,6 @@ public class GameOfLifeDisplayPanel extends DisplayPanel {
 			panelSize.get(1),
 			panelSize.get(2)
 		);
-		
-		this.setBackground(Color.GREEN);
 		
 		// fulfill with labels
 		int side = (int) (panelSize.get(1).getWidth() / gridRange);
