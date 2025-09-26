@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -31,8 +31,15 @@ public class GameOfLifeDisplay extends GameDisplay {
 		private Color liveColor;
 		private Color deadColor;
 		// getters and setters
-		public void setLiveColor(Color liveColor) {this.liveColor = liveColor;}
-		public void setCellColor() {
+		public boolean getLife() {return life;}
+		public void setLife(boolean life) {
+			this.life = life;
+		}
+		public void setLiveColor(Color liveColor) {
+			this.liveColor = liveColor;
+			this.setBackground((life) ? liveColor : deadColor);
+		}
+		public void setCurrentColor() {
 			life = !life;
 			this.setBackground((life) ? liveColor : deadColor);
 		}
@@ -62,7 +69,7 @@ public class GameOfLifeDisplay extends GameDisplay {
 			///System.out.println("Empieza a presionar el botón");
 			int status = display.getStatus();
 			if (status < 2) {
-				setCellColor();
+				setCurrentColor();
 			}
 		}
 		@Override
@@ -82,7 +89,9 @@ public class GameOfLifeDisplay extends GameDisplay {
 	
 	// UI COMPONENTS //
 	
-	Gui gui = null;
+	private Gui gui = null;
+	
+	private List<CellPanel> cellsList = null;
 	
 	// GETTERS AND SETTERS //
 	
@@ -109,6 +118,12 @@ public class GameOfLifeDisplay extends GameDisplay {
 	
 	public void setCellColor(Color cellColor) {
 		this.cellColor = cellColor;
+		for (Component comp : this.getComponents()) {
+			CellPanel cell = (CellPanel) comp;
+			if (cell.getLife()) {
+				cell.setLiveColor(this.cellColor);
+			}
+		}
 		update();
 	}
 	
@@ -116,7 +131,7 @@ public class GameOfLifeDisplay extends GameDisplay {
 		return status;
 	}
 	
-	public void setStatus(int status) {
+	public synchronized void setStatus(int status) {
 		this.status = status;
 	}
 	
@@ -131,29 +146,10 @@ public class GameOfLifeDisplay extends GameDisplay {
 		this.gridRange = gridRange;
 		this.timeLapse = timeLapse;
 		this.cellColor = cellColor;
+		this.cellsList = new ArrayList<CellPanel>();
 		this.status = 0;
 		
-		// build UI components
-		buildup();
-	}
-	
-	// METHOD BUILD PANEL //
-	
-	@Override
-	protected void buildup() {
-		// set layout
-		this.setLayout(new GridLayout(gridRange, gridRange));
-		
-		// set properties
-		this.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-		gui.setComponentSize(
-			this,
-			panelSize[0],
-			panelSize[1],
-			panelSize[2]
-		);
-		
-		// fulfill with labels
+		// fulfill 'cellsList' separately
 		int side = (int) (panelSize[1].getWidth() / gridRange);
 		for (int i = 0; i < Math.pow(gridRange, 2); i++) {
 			// set cell border separately
@@ -177,6 +173,31 @@ public class GameOfLifeDisplay extends GameDisplay {
 			);
 			cell.setBackground(Color.black);
 			cell.setBorder(border);
+			cellsList.add(cell);
+		}
+		
+		// build UI components
+		buildup();
+	}
+	
+	// OVERRIDE METHOD 'buildup' //
+	
+	@Override
+	protected void buildup() {
+		// set layout
+		this.setLayout(new GridLayout(gridRange, gridRange));
+		
+		// set properties
+		this.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		gui.setComponentSize(
+			this,
+			panelSize[0],
+			panelSize[1],
+			panelSize[2]
+		);
+		
+		// add 'cellsList' to main panel one by one
+		for (CellPanel cell : cellsList) {			
 			this.add(cell);
 		}
 		
@@ -184,12 +205,54 @@ public class GameOfLifeDisplay extends GameDisplay {
 		this.setVisible(true);
 	}
 	
-	// METHOD UPDATE PANEL //
+	// OVERRIDE METHOD 'update' //
 	
 	@Override
 	protected void update() {
 		// clear container
 		this.removeAll();
+		
+		// refill 'cellsList' separately
+		if (cellsList.size() == Math.pow(gridRange, 2)) {
+			// declare new list
+			List<CellPanel> newList = new ArrayList<CellPanel>();
+			// save cells of 'cellsList' in new list
+			for (CellPanel cell: cellsList) {newList.add(cell);}
+			// clear 'cellsList'
+			cellsList.clear();
+			// update 'cellsList' with new list cells
+			for (CellPanel cell : newList) {cellsList.add(cell);}
+		} else {
+			// calculate length (px) of cell side
+			int side = (int) (panelSize[1].getWidth() / gridRange);
+			// clear 'cellsList'
+			cellsList.clear();
+			// for each new cell:
+			for (int i = 0; i < Math.pow(gridRange, 2); i++) {
+				// set cell border separately
+				MatteBorder border;
+				if (i == 0) {
+					border = new MatteBorder(1, 1, 1, 1, Color.WHITE);
+				} else if (i < gridRange) {
+					border = new MatteBorder(1, 0, 1, 1, Color.WHITE);
+				} else if (i % gridRange == 0) {
+					border = new MatteBorder(0, 1, 1, 1, Color.WHITE);
+				} else {
+					border = new MatteBorder(0, 0, 1, 1, Color.WHITE);
+				}
+				// intialize cell
+				CellPanel cell = new CellPanel(this, cellColor);
+				gui.setComponentSize(
+					cell,
+					new Dimension(side,side),
+					new Dimension(side,side),
+					new Dimension(side,side)
+				);
+				cell.setBackground(Color.black);
+				cell.setBorder(border);
+				cellsList.add(cell);
+			}
+		}
 		
 		// rebuild JPanel
 		buildup();
@@ -198,5 +261,5 @@ public class GameOfLifeDisplay extends GameDisplay {
 		this.revalidate();
 		this.repaint();
 	}
-
+	
 }

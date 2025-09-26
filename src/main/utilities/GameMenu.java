@@ -64,6 +64,14 @@ public abstract class GameMenu extends JPanel {
 	
 	protected JButton jbutton_back = null;
 	
+	// GAME COMPONENTS //
+	
+	protected GameDisplay display = null;
+	
+	protected GameThread gameThread = null;
+	
+	///protected Thread thread = null;
+	
 	// CONSTRUCTOR //
 	
 	public GameMenu(Gui gui) {
@@ -151,9 +159,8 @@ public abstract class GameMenu extends JPanel {
 			buttonSize[1],
 			buttonSize[2]
 		);
-		jbutton_back.addActionListener( event -> {
-			gui.mockup(new MainMenu(gui));
-		});
+		// add action listener, to come back to main menu
+		jbutton_back.addActionListener( event -> {gui.mockup(new MainMenu(gui));});
 		// add components
 		optionsBottomPanel.add(jbutton_back);
 		

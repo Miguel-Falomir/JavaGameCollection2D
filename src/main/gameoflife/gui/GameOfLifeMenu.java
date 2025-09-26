@@ -7,8 +7,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -17,6 +15,7 @@ import javax.swing.JPanel;
 
 import main.Gui;
 import main.utilities.Item;
+import main.utilities.MainMenu;
 import main.utilities.GameMenu;
 
 public class GameOfLifeMenu extends GameMenu{
@@ -100,14 +99,16 @@ public class GameOfLifeMenu extends GameMenu{
 		cellColorList[0]
 	};
 	
-	// UI COMPONENTS //
-	
-	private GameOfLifeDisplay display = null;
+	private boolean alreadyStarted = false;
 	
 	// GETTERS AND SETTERS //
 	
 	public synchronized GameOfLifeDisplay getDisplay() {
-		return display;
+		return (GameOfLifeDisplay) display;
+	}
+	
+	public synchronized GameOfLifeThread getGameThread() {
+		return (GameOfLifeThread) gameThread;
 	}
 	
 	// CONSTRUCTOR //
@@ -132,14 +133,17 @@ public class GameOfLifeMenu extends GameMenu{
 			ceci.setName(translatedColors[i]);
 		}
 		
+		// add components to 'optionsPanel'
+		buildupMenu();
+		
 		// initialize 'displayPanel'
 		buildupDisplay();
 		
-		// add components to 'optionsPanel'
-		buildupMenu();
+		// execute game thread
+		executeThread();
 	}
 	
-	// OVERRIDE METHOD 'buildupOptions' //
+	// OVERRIDE METHOD 'buildupMenu' //
 	
 	@Override
 	protected void buildupMenu() {
@@ -162,14 +166,12 @@ public class GameOfLifeMenu extends GameMenu{
 			gridRangeList,
 			1
 		);
-		
 		generateComboBox(
 			new JComboBox<Item>(),
 			new JLabel(gui.getMessages().getString("gameoflife_TimeLapse_Label")),
 			timeLapseList,
 			2
 		);
-
 		generateComboBox(
 			new JComboBox<Item>(),
 			new JLabel(gui.getMessages().getString("gameoflife_CellColor_Label")),
@@ -209,17 +211,11 @@ public class GameOfLifeMenu extends GameMenu{
 		}
 		
 		// add action listener for each button separately
-		/**
-		 * As each index has the same number as their desired status,
-		 * I tried to implement all of this in the foreach (after turning
-		 * it a for loop, of course).
-		 * Result:
-		 * 'i' counter throws exception because it is supposed to be some
-		 * kind of "final" variable. I didn't understand the error, only
-		 * that it would force me to bungle this workaround.
-		 */
-		buttonArray[0].addActionListener( event -> {	// stop
-			display.setStatus(0);
+		buttonArray[0].addActionListener( event -> {
+			// stop thread
+			getGameThread().stop();
+			// set 'alreadySterted' to false
+			alreadyStarted = false;
 			/**
 			 * These bidimensional loops happen because each controller is actually
 			 * a group of components within their own JPanel(s). That is, for each
@@ -232,8 +228,9 @@ public class GameOfLifeMenu extends GameMenu{
 				}
 			}
 		});
-		buttonArray[1].addActionListener( event -> {	// pause
-			display.setStatus(1);
+		buttonArray[1].addActionListener( event -> {
+			// pause thread
+			getGameThread().pause();
 			for (Component comp_1 : optionsCenterCenterPanel.getComponents()) {
 				JPanel pan = (JPanel) comp_1;
 				for (Component comp_2 : pan.getComponents()) {
@@ -241,8 +238,16 @@ public class GameOfLifeMenu extends GameMenu{
 				}
 			}
 		});
-		buttonArray[2].addActionListener( event -> {	// start/resume
-			display.setStatus(2);
+		buttonArray[2].addActionListener( event -> {
+			// Is 'alreadyStarted' true?
+			if (alreadyStarted) {
+				// YES: resume paused thread
+				getGameThread().resume();
+			} else {
+				// NO:  start a new thread
+				getGameThread().start();
+				alreadyStarted = true;
+			}
 			for (Component comp_1 : optionsCenterCenterPanel.getComponents()) {
 				JPanel pan = (JPanel) comp_1;
 				for (Component comp_2 : pan.getComponents()) {
@@ -253,6 +258,12 @@ public class GameOfLifeMenu extends GameMenu{
 		
 		// add 'pauseMenuPanel' to 'optionsCenterBottomPanel'
 		optionsCenterBottomPanel.add(pauseMenuPanel, gbcCentered);
+		
+		// to 'jbutton_back', add action listener to stop current thread
+		/**
+		 * It's compatible with previous actionListeners. Trust me bro, I checked (:
+		 */
+		jbutton_back.addActionListener( event -> {getGameThread().stop();});
 	}
 	
 	// OVERRIDE METHOD 'buildupDisplay' //
@@ -262,7 +273,7 @@ public class GameOfLifeMenu extends GameMenu{
 		// initialize (despite this method is supposed to be empty...)
 		super.buildupDisplay();
 		
-		// set properties (coming soon...)
+		// set properties
 		display = new GameOfLifeDisplay(
 			gui,
 			((GridRangeItem) initialItemsList[0]).getGridRange(),
@@ -271,10 +282,21 @@ public class GameOfLifeMenu extends GameMenu{
 		);
 		
 		// add 'displayPanel' to 'centralPanel'
-		centralPanel.add(display, gbcCentered);
+		centralPanel.add(getDisplay(), gbcCentered);
 		
 		// add 'centralPanel' to screen
 		this.add(centralPanel, BorderLayout.CENTER);
+	}
+	
+	// OVERRIDE METHOD 'executeThread' //
+	
+	@Override
+	protected void executeThread() {
+		// initialize (despite this method is supposed to be empty...)
+		super.executeThread();
+		
+		// initialize 'gameThread'
+		gameThread = new GameOfLifeThread(display);
 	}
 	
 	// OVERRIDE METHOD 'generateComboBox' //
@@ -291,7 +313,7 @@ public class GameOfLifeMenu extends GameMenu{
 				combo.addActionListener( event -> {
 					GridRangeItem selected = (GridRangeItem) combo.getSelectedItem();
 					int newGridRange = selected.getGridRange();
-					display.setGridRange(newGridRange);
+					getDisplay().setGridRange(newGridRange);
 				});
 				break;
 			case 2:	// time lapse
@@ -299,7 +321,7 @@ public class GameOfLifeMenu extends GameMenu{
 				combo.addActionListener( event -> {
 					TimeLapseItem selected = (TimeLapseItem) combo.getSelectedItem();
 					int newTimeLapse = selected.getTimeLapse();
-					display.setTimeLapse(newTimeLapse);
+					getDisplay().setTimeLapse(newTimeLapse);
 				});
 				break;
 			case 3:	// cell color
@@ -307,7 +329,7 @@ public class GameOfLifeMenu extends GameMenu{
 				combo.addActionListener( event -> {
 					CellColorItem selected = (CellColorItem) combo.getSelectedItem();
 					Color newCellColor = selected.getCellColor();
-					display.setCellColor(newCellColor);
+					getDisplay().setCellColor(newCellColor);
 				});
 				break;
 			default:

@@ -109,9 +109,12 @@ public class MainMenu extends JPanel {
 			new ActionListener() { // game of life (J.H.Conway)
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					/**
 					new Thread(
 						new GameOfLifeThread(gui)
 					).start();
+					*/
+					gui.mockup(new GameOfLifeMenu(gui));
 				}
 			},
 			new ActionListener() { // snake
