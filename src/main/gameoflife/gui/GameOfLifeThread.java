@@ -5,36 +5,49 @@ import main.utilities.GameThread;
 
 public class GameOfLifeThread extends GameThread {
 	
+	// SHARED OBJECT //
+	
+	GameOfLifeDisplay gold;
+	
 	// CONSTRUCTOR //
 	
 	public GameOfLifeThread(GameDisplay display) {
 		super(display);
+		this.gold = (GameOfLifeDisplay) display;
 	}
 	
 	// OVERRIDE METHOD 'run()' //
 
 	@Override
 	public void run() {
-		// cast game display to match child class
-		GameOfLifeDisplay gold = (GameOfLifeDisplay) display;
-		
-		// run loop while 'thread' matches with currently executed thread
+		// start each cell's thread
 		Thread current = Thread.currentThread();
 		System.out.println("BEGINNING");
+		if (thread != null && thread.equals(current)) {
+			for (CellPanel cell : gold.getCellsList()) {
+				cell.setMainThread(thread);
+				(new Thread(cell)).start();
+			}
+		}
+		
+		// run loop while 'thread' matches with currently executed thread
 		while (thread != null && thread.equals(current)) {
 			try {
-				switch (getStatus()) {
+				switch (gold.getStatus()) {
 					case 0:		// status 0: stop
+						/**
+						 * This wait() does nothing, but the least I need at this moment
+						 * is to hear eclipse cry for some unused exception...
+						 */
+						wait();
 						break;
 					case 1:		// status 1: paused
-						System.out.println("---------- pause ----------");
-						synchronized(this) {
-							while (getStatus() == 1) {wait();}
-		                }
+						/* pausar mientras 'status' == 1 */
 						break;
 					case 2:		// status 2: start and resume
-						System.out.println("braka");
-						Thread.sleep(gold.getTimeLapse());
+						/* detenerse durante 'timeLapse' milisegundos */
+						/* para entonces todas las celdas deberian haber calculado 'newLife' */
+						/* colorear celdas en base a 'newLife' */
 						break;
 					default:
 						break;

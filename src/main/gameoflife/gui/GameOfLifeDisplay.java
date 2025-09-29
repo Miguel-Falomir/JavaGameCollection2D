@@ -22,70 +22,14 @@ public class GameOfLifeDisplay extends GameDisplay {
 
 	private static final long serialVersionUID = -8049480235816106864L;
 	
-	// CUSTOM CLASS FOR GAME OF LIFE CELLS //
-	
-	private class CellPanel extends JPanel implements MouseListener {
-		// attributes
-		private GameOfLifeDisplay display;
-		private boolean life;
-		private Color liveColor;
-		private Color deadColor;
-		// getters and setters
-		public boolean getLife() {return life;}
-		public void setLife(boolean life) {
-			this.life = life;
-		}
-		public void setLiveColor(Color liveColor) {
-			this.liveColor = liveColor;
-			this.setBackground((life) ? liveColor : deadColor);
-		}
-		public void setCurrentColor() {
-			life = !life;
-			this.setBackground((life) ? liveColor : deadColor);
-		}
-		// constructor
-		public CellPanel(GameOfLifeDisplay display, Color lifeColor) {
-			this.display = display;
-			this.life = false;
-			this.liveColor = lifeColor;
-			this.deadColor = Color.BLACK;
-			this.addMouseListener(this);
-		}
-		// action listener(s)
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			///System.out.println("hace click");
-		}
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			///System.out.println("Pone el ratón encima");
-		}
-		@Override
-		public void mouseExited(MouseEvent e) {
-			///System.out.println("Quita el ratón");
-		}
-		@Override
-		public void mousePressed(MouseEvent e) {
-			///System.out.println("Empieza a presionar el botón");
-			int status = display.getStatus();
-			if (status < 2) {
-				setCurrentColor();
-			}
-		}
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			///System.out.println("Suelta el botón");
-		}
-
-	}
-	
 	// VARIABLES //
 	
 	private Dimension[] panelSize;
 	private int gridRange;
 	private int timeLapse;
-	private Color cellColor;
 	private int status; /* 0: stop / 1: pause / 2: resume */
+	private Color cellColor;
+	private boolean timeLapseFinished;
 	
 	// UI COMPONENTS //
 	
@@ -120,7 +64,7 @@ public class GameOfLifeDisplay extends GameDisplay {
 		this.cellColor = cellColor;
 		for (Component comp : this.getComponents()) {
 			CellPanel cell = (CellPanel) comp;
-			if (cell.getLife()) {
+			if (cell.getOldLife()) {
 				cell.setLiveColor(this.cellColor);
 			}
 		}
@@ -133,6 +77,18 @@ public class GameOfLifeDisplay extends GameDisplay {
 	
 	public synchronized void setStatus(int status) {
 		this.status = status;
+	}
+	
+	public synchronized boolean getTimeLapseFinished() {
+		return timeLapseFinished;
+	}
+	
+	public synchronized void setTimeLapseFinished(boolean timeLapseFinished) {
+		this.timeLapseFinished = timeLapseFinished;
+	}
+	
+	public synchronized List<CellPanel> getCellsList() {
+		return cellsList;
 	}
 	
 	// CONSTRUCTOR //
@@ -148,6 +104,7 @@ public class GameOfLifeDisplay extends GameDisplay {
 		this.cellColor = cellColor;
 		this.cellsList = new ArrayList<CellPanel>();
 		this.status = 0;
+		this.timeLapseFinished = false;
 		
 		// fulfill 'cellsList' separately
 		int side = (int) (panelSize[1].getWidth() / gridRange);
@@ -164,7 +121,7 @@ public class GameOfLifeDisplay extends GameDisplay {
 				border = new MatteBorder(0, 0, 1, 1, Color.WHITE);
 			}
 			// intialize cell
-			CellPanel cell = new CellPanel(this, cellColor);
+			CellPanel cell = new CellPanel(this, cellColor, i);
 			gui.setComponentSize(
 				cell,
 				new Dimension(side,side),
@@ -241,7 +198,7 @@ public class GameOfLifeDisplay extends GameDisplay {
 					border = new MatteBorder(0, 0, 1, 1, Color.WHITE);
 				}
 				// intialize cell
-				CellPanel cell = new CellPanel(this, cellColor);
+				CellPanel cell = new CellPanel(this, cellColor, i);
 				gui.setComponentSize(
 					cell,
 					new Dimension(side,side),

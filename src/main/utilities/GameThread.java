@@ -10,22 +10,11 @@ public class GameThread implements GameRunnable {
 	
 	protected volatile Thread thread;
 	
-	protected int status;
-	
-	// GETTERS AND SETTERS //
-	
-	public synchronized int getStatus() {return status;}
-	
-	public synchronized void setStatus(int status) {
-		this.status = status;
-	}
-	
 	// CONSTRUCTOR //
 	
 	public GameThread(GameDisplay display) {
 		this.display = display;
 		this.thread = new Thread(this);
-		this.status = 0;
 	}
 
 	// METHOD EXECUTE THREAD //
@@ -35,7 +24,7 @@ public class GameThread implements GameRunnable {
 	
 	@Override
 	public void start() {
-		setStatus(2);
+		display.setStatus(2);
 		if (thread == null) {
 			thread = new Thread(this);
 		}
@@ -44,19 +33,20 @@ public class GameThread implements GameRunnable {
 	
 	@Override
 	public synchronized void pause() {
-		setStatus(1);
+		display.setStatus(1);
+		notifyAll();
 	}
 	
 	@Override
 	public synchronized void stop() {
-		setStatus(0);
+		display.setStatus(0);
 		thread = null;
-		notify();
+		notifyAll();
 	}
 	
 	@Override
 	public synchronized void resume() {
-		setStatus(2);
-		notify();
+		display.setStatus(2);
+		notifyAll();
 	}
 }
