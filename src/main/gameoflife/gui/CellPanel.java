@@ -15,13 +15,13 @@ public class CellPanel extends JPanel implements MouseListener, Runnable {
 	// SHARED OBJECTS //
 	
 	private GameOfLifeDisplay display;
-	private Thread mainThread;
 	
 	// ATTRIBUTES //
 	
 	private boolean oldLife;
 	private boolean newLife;
 	private int position;
+	private int neighbors;
 	private Color liveColor;
 	private Color deadColor;
 	
@@ -42,10 +42,6 @@ public class CellPanel extends JPanel implements MouseListener, Runnable {
 	public void setLiveColor(Color liveColor) {
 		this.liveColor = liveColor;
 		this.setBackground((oldLife) ? liveColor : deadColor);
-	}
-	
-	public void setMainThread(Thread thread) {
-		this.mainThread = thread;
 	}
 	
 	// CONSTRUCTOR //
@@ -93,7 +89,7 @@ public class CellPanel extends JPanel implements MouseListener, Runnable {
 	
 	// METHOD COUNT LIVING NEIGHBOURS //
 	
-	private void setNextGen() {
+	public void countNeighbors() {
 		// calculate the index of each neighbor
 		int side = display.getGridRange();
 		int[] positions = {
@@ -106,33 +102,32 @@ public class CellPanel extends JPanel implements MouseListener, Runnable {
 			position + side - 1,	// bot-left
 			position - 1			// mid-left
 		};
-		int count = 0;
+		neighbors = 0;
 		
 		// count how many neighbors are alive (oldLife == true)
 		for (int pos : positions) {			
 			try {
 				CellPanel cell = display.getCellsList().get(pos);
-				if (cell.getOldLife()) {count++;}
+				if (cell.getOldLife()) {neighbors++;}
 			} catch (IndexOutOfBoundsException e) {
-				/**
-				 * This for-each loop is meant to look for all 8 neighbors.
-				 * Neighbors that corners and sides are not expected to adjoin,
-				 * hence the catch exception, to cancel the entire process when
-				 * trying to reach a non-existent cell.
-				 */
-				System.out.println("that cell doesn't exist");
+				break;
 			}
-		}
-		
+		}		
+	}
+	
+	// METHOD UPDATE TO NEXT GENERATION //
+	
+	public void updateGeneration() {
 		// set if this cell lives for the next generation...
-		if (
-			(oldLife == true)  && (count == 2 || count == 3) ||
-			(oldLife == false) && (count == 3)
+		if ((oldLife == true)  && (neighbors == 2 || neighbors == 3) ||
+			(oldLife == false) && (neighbors == 3)
 		) {
 			newLife = true;
 		} else {// or dies
 			newLife = false;
 		}
+		
+		this.setBackground((newLife) ? liveColor : deadColor);
 		
 		// update 'oldLife'
 		oldLife = newLife;
@@ -142,27 +137,7 @@ public class CellPanel extends JPanel implements MouseListener, Runnable {
 	
 	@Override
 	public void run() {
-		while (mainThread != null && display.getStatus() > 0) {
-			try {
-				switch (display.getStatus()) {
-					case 0:		// status 0: stop
-						/**
-						 * This wait() does nothing, but the least I need at this moment
-						 * is to hear eclipse cry for some unused exception...
-						 */
-						wait();
-					case 1:		// status 1: paused
-						break;
-					case 2:		// status 2: start and resume
-						break;
-					default:
-						System.out.println(display.getStatus());
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		this.setBackground(deadColor);
+		countNeighbors();
 		System.out.println(Thread.currentThread().getName() + " DIES");
 	}
 

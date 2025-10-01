@@ -20,15 +20,8 @@ public class GameOfLifeThread extends GameThread {
 
 	@Override
 	public void run() {
-		// start each cell's thread
 		Thread current = Thread.currentThread();
 		System.out.println("BEGINNING");
-		if (thread != null && thread.equals(current)) {
-			for (CellPanel cell : gold.getCellsList()) {
-				cell.setMainThread(thread);
-				(new Thread(cell)).start();
-			}
-		}
 		
 		// run loop while 'thread' matches with currently executed thread
 		while (thread != null && thread.equals(current)) {
@@ -45,9 +38,13 @@ public class GameOfLifeThread extends GameThread {
 						/* pausar mientras 'status' == 1 */
 						break;
 					case 2:		// status 2: start and resume
-						/* detenerse durante 'timeLapse' milisegundos */
-						/* para entonces todas las celdas deberian haber calculado 'newLife' */
-						/* colorear celdas en base a 'newLife' */
+						for (CellPanel cell : gold.getCellsList()) {
+							cell.countNeighbors();
+						}
+						Thread.sleep(gold.getTimeLapse());
+						for (CellPanel cell : gold.getCellsList()) {
+							cell.updateGeneration();
+						}
 						break;
 					default:
 						break;
