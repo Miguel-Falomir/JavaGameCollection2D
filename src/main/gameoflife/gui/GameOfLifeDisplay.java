@@ -4,13 +4,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 
 import main.Gui;
@@ -35,7 +32,7 @@ public class GameOfLifeDisplay extends GameDisplay {
 	
 	private Gui gui = null;
 	
-	private List<CellPanel> cellsList = null;
+	private ArrayList<ArrayList<CellPanel>> cellsGrid = null;
 	
 	// GETTERS AND SETTERS //
 	
@@ -87,8 +84,8 @@ public class GameOfLifeDisplay extends GameDisplay {
 		this.timeLapseFinished = timeLapseFinished;
 	}
 	
-	public synchronized List<CellPanel> getCellsList() {
-		return cellsList;
+	public synchronized ArrayList<ArrayList<CellPanel>> getCellsGrid() {
+		return cellsGrid;
 	}
 	
 	// CONSTRUCTOR //
@@ -102,35 +99,42 @@ public class GameOfLifeDisplay extends GameDisplay {
 		this.gridRange = gridRange;
 		this.timeLapse = timeLapse;
 		this.cellColor = cellColor;
-		this.cellsList = new ArrayList<CellPanel>();
+		this.cellsGrid = new ArrayList<ArrayList<CellPanel>>();
 		this.status = 0;
 		this.timeLapseFinished = false;
 		
-		// fulfill 'cellsList' separately
+		// fulfill 'cellsGrid' separately
 		int side = (int) (panelSize[1].getWidth() / gridRange);
-		for (int i = 0; i < Math.pow(gridRange, 2); i++) {
-			// set cell border separately
-			MatteBorder border;
-			if (i == 0) {
-				border = new MatteBorder(1, 1, 1, 1, Color.WHITE);
-			} else if (i < gridRange) {
-				border = new MatteBorder(1, 0, 1, 1, Color.WHITE);
-			} else if (i % gridRange == 0) {
-				border = new MatteBorder(0, 1, 1, 1, Color.WHITE);
-			} else {
-				border = new MatteBorder(0, 0, 1, 1, Color.WHITE);
+		for (int i = 0; i < gridRange; i++) {
+			// create new arraylist
+			ArrayList<CellPanel> list = new ArrayList<CellPanel>();
+			// fulfill each new list
+			for (int j = 0; j < gridRange; j++) {
+				// set cell border separately
+				MatteBorder border;
+				if (i == 0 && j == 0) {
+					border = new MatteBorder(1, 1, 1, 1, Color.WHITE);
+				} else if (i == 0 && j > 0) {
+					border = new MatteBorder(1, 0, 1, 1, Color.WHITE);
+				} else if (i > 0 && j == 0) {
+					border = new MatteBorder(0, 1, 1, 1, Color.WHITE);
+				} else {
+					border = new MatteBorder(0, 0, 1, 1, Color.WHITE);
+				}
+				// intialize cell
+				CellPanel cell = new CellPanel(this, cellColor, new int[] {j, i});
+				gui.setComponentSize(
+					cell,
+					new Dimension(side,side),
+					new Dimension(side,side),
+					new Dimension(side,side)
+				);
+				cell.setBackground(Color.black);
+				cell.setBorder(border);
+				list.add(cell);
 			}
-			// intialize cell
-			CellPanel cell = new CellPanel(this, cellColor, i);
-			gui.setComponentSize(
-				cell,
-				new Dimension(side,side),
-				new Dimension(side,side),
-				new Dimension(side,side)
-			);
-			cell.setBackground(Color.black);
-			cell.setBorder(border);
-			cellsList.add(cell);
+			// add new arraylist to grid as a new row
+			cellsGrid.add(list);
 		}
 		
 		// build UI components
@@ -154,8 +158,10 @@ public class GameOfLifeDisplay extends GameDisplay {
 		);
 		
 		// add 'cellsList' to main panel one by one
-		for (CellPanel cell : cellsList) {			
-			this.add(cell);
+		for (ArrayList<CellPanel> row : cellsGrid) {			
+			for (CellPanel cell : row) {
+				this.add(cell);
+			}
 		}
 		
 		// show
@@ -170,44 +176,51 @@ public class GameOfLifeDisplay extends GameDisplay {
 		this.removeAll();
 		
 		// refill 'cellsList' separately
-		if (cellsList.size() == Math.pow(gridRange, 2)) {
+		if (cellsGrid.size() == Math.pow(gridRange, 2)) {
 			// declare new list
-			List<CellPanel> newList = new ArrayList<CellPanel>();
+			ArrayList<ArrayList<CellPanel>> newGrid = new ArrayList<ArrayList<CellPanel>>();
 			// save cells of 'cellsList' in new list
-			for (CellPanel cell: cellsList) {newList.add(cell);}
+			for (ArrayList<CellPanel> row : cellsGrid) {newGrid.add(row);}
 			// clear 'cellsList'
-			cellsList.clear();
+			cellsGrid.clear();
 			// update 'cellsList' with new list cells
-			for (CellPanel cell : newList) {cellsList.add(cell);}
+			for (ArrayList<CellPanel> row : newGrid) {cellsGrid.add(row);}
 		} else {
 			// calculate length (px) of cell side
 			int side = (int) (panelSize[1].getWidth() / gridRange);
 			// clear 'cellsList'
-			cellsList.clear();
+			cellsGrid.clear();
 			// for each new cell:
-			for (int i = 0; i < Math.pow(gridRange, 2); i++) {
-				// set cell border separately
-				MatteBorder border;
-				if (i == 0) {
-					border = new MatteBorder(1, 1, 1, 1, Color.WHITE);
-				} else if (i < gridRange) {
-					border = new MatteBorder(1, 0, 1, 1, Color.WHITE);
-				} else if (i % gridRange == 0) {
-					border = new MatteBorder(0, 1, 1, 1, Color.WHITE);
-				} else {
-					border = new MatteBorder(0, 0, 1, 1, Color.WHITE);
+			for (int i = 0; i < gridRange; i++) {
+				// create new arraylist
+				ArrayList<CellPanel> list = new ArrayList<CellPanel>();
+				// fulfill each new list
+				for (int j = 0; j < gridRange; j++) {				
+					// set cell border separately
+					MatteBorder border;
+					if (i == 0 && j == 0) {
+						border = new MatteBorder(1, 1, 1, 1, Color.WHITE);
+					} else if (i == 0 && j > 0) {
+						border = new MatteBorder(1, 0, 1, 1, Color.WHITE);
+					} else if (i > 0 && j == 0) {
+						border = new MatteBorder(0, 1, 1, 1, Color.WHITE);
+					} else {
+						border = new MatteBorder(0, 0, 1, 1, Color.WHITE);
+					}
+					// intialize cell
+					CellPanel cell = new CellPanel(this, cellColor, new int[] {i, j});
+					gui.setComponentSize(
+						cell,
+						new Dimension(side,side),
+						new Dimension(side,side),
+						new Dimension(side,side)
+					);
+					cell.setBackground(Color.black);
+					cell.setBorder(border);
+					list.add(cell);
 				}
-				// intialize cell
-				CellPanel cell = new CellPanel(this, cellColor, i);
-				gui.setComponentSize(
-					cell,
-					new Dimension(side,side),
-					new Dimension(side,side),
-					new Dimension(side,side)
-				);
-				cell.setBackground(Color.black);
-				cell.setBorder(border);
-				cellsList.add(cell);
+				// add new arraylist to grid as a new row
+				cellsGrid.add(list);
 			}
 		}
 		

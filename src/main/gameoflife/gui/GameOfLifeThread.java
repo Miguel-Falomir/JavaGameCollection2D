@@ -28,23 +28,15 @@ public class GameOfLifeThread extends GameThread {
 			try {
 				switch (gold.getStatus()) {
 					case 0:		// status 0: stop
-						/**
-						 * This wait() does nothing, but the least I need at this moment
-						 * is to hear eclipse cry for some unused exception...
-						 */
-						wait();
 						break;
 					case 1:		// status 1: paused
-						/* pausar mientras 'status' == 1 */
+						synchronized (this) {
+							while (gold.getStatus() == 1) {wait();}
+						}
 						break;
 					case 2:		// status 2: start and resume
-						for (CellPanel cell : gold.getCellsList()) {
-							cell.countNeighbors();
-						}
 						Thread.sleep(gold.getTimeLapse());
-						for (CellPanel cell : gold.getCellsList()) {
-							cell.updateGeneration();
-						}
+						System.out.println("bucle");
 						break;
 					default:
 						break;
