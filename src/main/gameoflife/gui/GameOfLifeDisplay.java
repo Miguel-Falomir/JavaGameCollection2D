@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.border.MatteBorder;
@@ -25,8 +24,8 @@ public class GameOfLifeDisplay extends GameDisplay {
 	private int gridRange;
 	private int timeLapse;
 	private int status; /* 0: stop / 1: pause / 2: resume */
+	private int lastChange; /* 0: stock / 1: grid range / 2: time lapse / 3: cell color */
 	private Color cellColor;
-	private boolean timeLapseFinished;
 	
 	// UI COMPONENTS //
 	
@@ -36,57 +35,42 @@ public class GameOfLifeDisplay extends GameDisplay {
 	
 	// GETTERS AND SETTERS //
 	
-	public int getGridRange() {
-		return gridRange;
-	}
+	public int getGridRange() {return gridRange;}
 	
 	public void setGridRange(int gridRange) {
 		this.gridRange = gridRange;
+		this.lastChange = 1;
 		update();
 	}	
 	
-	public int getTimeLapse() {
-		return timeLapse;
-	}
+	public int getTimeLapse() {return timeLapse;}
 	
 	public void setTimeLapse(int timeLapse) {
 		this.timeLapse = timeLapse;
+		this.lastChange = 2;
 	}
 	
-	public Color getCellColor() {
-		return cellColor;
-	}
+	public int getLastChange() {return lastChange;}
+	
+	public void setLastChange(int lastChange) {this.lastChange = lastChange;}
+	
+	public Color getCellColor() {return cellColor;}
 	
 	public void setCellColor(Color cellColor) {
 		this.cellColor = cellColor;
+		this.lastChange = 3;
 		for (Component comp : this.getComponents()) {
 			CellPanel cell = (CellPanel) comp;
-			if (cell.getOldLife()) {
-				cell.setLiveColor(this.cellColor);
-			}
+			cell.setLiveColor(this.cellColor);
 		}
 		update();
 	}
 	
-	public synchronized int getStatus() {
-		return status;
-	}
+	public int getStatus() {return status;}
 	
-	public synchronized void setStatus(int status) {
-		this.status = status;
-	}
+	public void setStatus(int status) {this.status = status;}
 	
-	public synchronized boolean getTimeLapseFinished() {
-		return timeLapseFinished;
-	}
-	
-	public synchronized void setTimeLapseFinished(boolean timeLapseFinished) {
-		this.timeLapseFinished = timeLapseFinished;
-	}
-	
-	public synchronized ArrayList<ArrayList<CellPanel>> getCellsGrid() {
-		return cellsGrid;
-	}
+	public ArrayList<ArrayList<CellPanel>> getCellsGrid() {return cellsGrid;}
 	
 	// CONSTRUCTOR //
 
@@ -101,7 +85,7 @@ public class GameOfLifeDisplay extends GameDisplay {
 		this.cellColor = cellColor;
 		this.cellsGrid = new ArrayList<ArrayList<CellPanel>>();
 		this.status = 0;
-		this.timeLapseFinished = false;
+		this.lastChange = 0;
 		
 		// fulfill 'cellsGrid' separately
 		int side = (int) (panelSize[1].getWidth() / gridRange);
@@ -176,7 +160,7 @@ public class GameOfLifeDisplay extends GameDisplay {
 		this.removeAll();
 		
 		// refill 'cellsList' separately
-		if (cellsGrid.size() == Math.pow(gridRange, 2)) {
+		if (this.lastChange == 3) {
 			// declare new list
 			ArrayList<ArrayList<CellPanel>> newGrid = new ArrayList<ArrayList<CellPanel>>();
 			// save cells of 'cellsList' in new list
@@ -208,7 +192,7 @@ public class GameOfLifeDisplay extends GameDisplay {
 						border = new MatteBorder(0, 0, 1, 1, Color.WHITE);
 					}
 					// intialize cell
-					CellPanel cell = new CellPanel(this, cellColor, new int[] {i, j});
+					CellPanel cell = new CellPanel(this, cellColor, new int[] {j, i});
 					gui.setComponentSize(
 						cell,
 						new Dimension(side,side),

@@ -1,5 +1,7 @@
 package main.gameoflife.gui;
 
+import java.util.ArrayList;
+
 import main.utilities.GameDisplay;
 import main.utilities.GameThread;
 
@@ -35,8 +37,22 @@ public class GameOfLifeThread extends GameThread {
 						}
 						break;
 					case 2:		// status 2: start and resume
-						Thread.sleep(gold.getTimeLapse());
-						System.out.println("bucle");
+						long startTime = System.currentTimeMillis();
+						for (ArrayList<CellPanel> row : gold.getCellsGrid()) {
+							for (CellPanel cell : row) {
+								cell.countNeighbors();
+							}
+						}
+						for (ArrayList<CellPanel> row : gold.getCellsGrid()) {
+							for (CellPanel cell : row) {
+								cell.updateGeneration();
+							}
+						}
+						long endTime = System.currentTimeMillis() - startTime;
+						System.out.println(endTime);
+						synchronized (this) {							
+							wait(gold.getTimeLapse() - endTime);
+						}
 						break;
 					default:
 						break;
@@ -45,6 +61,7 @@ public class GameOfLifeThread extends GameThread {
 				e.printStackTrace();
 			}
 		}
+		
 		System.out.println("DEATH");
 	}
 	
@@ -66,7 +83,9 @@ public class GameOfLifeThread extends GameThread {
 	
 	@Override
 	public synchronized void stop() {
+		gold.setLastChange(0);
 		super.stop();
+		gold.update();
 	}
 	
 	// OVERRIDE METHOD 'resume()' //

@@ -6,7 +6,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
-public class CellPanel extends JPanel implements MouseListener, Runnable {
+public class CellPanel extends JPanel implements MouseListener {
 	
 	// SERIAL VERSION IDENTIFIER //
 	
@@ -91,8 +91,8 @@ public class CellPanel extends JPanel implements MouseListener, Runnable {
 	
 	public void countNeighbors() {
 		// calculate the index of each neighbor
-		int axis_X = position[0];
-		int axis_Y = position[1];
+		int axis_X = position[1];
+		int axis_Y = position[0];
 		int[][] neighborPositions = {
 			new int[] {axis_X - 1, axis_Y - 1},	// top-left
 			new int[] {axis_X, axis_Y - 1},		// top-middle
@@ -106,12 +106,10 @@ public class CellPanel extends JPanel implements MouseListener, Runnable {
 		neighbors = 0;
 		
 		// count how many neighbors are alive (oldLife == true)
-		for (int[] pos : neighborPositions) {			
+		for (int[] pos : neighborPositions) {
 			try {
 				CellPanel cell = display.getCellsGrid().get(pos[0]).get(pos[1]);
-				if (cell.getOldLife()) {
-					neighbors++;
-				}
+				if (cell.getOldLife()) {neighbors++;}
 			} catch (IndexOutOfBoundsException e) {
 				/**
 				 * This exception is expected to happen. As this program checks all 8
@@ -119,29 +117,9 @@ public class CellPanel extends JPanel implements MouseListener, Runnable {
 				 * As brute as it may sound, this way saved me around 9 conditionals
 				 * (4 corners + 4 sides + middle)
 				 */
-				e.printStackTrace();
-				/**
-				 * I have discovered that putting a break in the try-catch of a loop
-				 * actually breaks the entire loop, not just current iteration (Or at
-				 * least that's what happened to me).
-				 * The break below is kept as a reminder for me, and a warning for you.
-				 */
-				///break;
 			}
 		}
 		
-		// print: nothing this time
-		/**neighbors count
-		System.out.println("I am cell [" + this.position[0] + ", " + this.position[1] + "]");
-		System.out.println("I have " + neighbors + " neighbors");
-		 */
-		/**neighbors' positions
-		System.out.println("I am cell [" + this.position[0] + ", " + this.position[1] + "]");
-		System.out.println("My neighbors are:");
-		System.out.println("["+neighborPositions[0][0]+","+neighborPositions[0][1]+"]" + "["+neighborPositions[1][0]+","+neighborPositions[1][1]+"]" + "["+neighborPositions[2][0]+","+neighborPositions[2][1]+"]");
-		System.out.println("["+neighborPositions[3][0]+","+neighborPositions[3][1]+"]" + "[X.X]" + "["+neighborPositions[4][0]+","+neighborPositions[4][1]+"]");
-		System.out.println("["+neighborPositions[5][0]+","+neighborPositions[5][1]+"]" + "["+neighborPositions[6][0]+","+neighborPositions[6][1]+"]" + "["+neighborPositions[7][0]+","+neighborPositions[7][1]+"]");
-		 */
 	}
 	
 	// METHOD UPDATE TO NEXT GENERATION //
@@ -155,19 +133,10 @@ public class CellPanel extends JPanel implements MouseListener, Runnable {
 		} else {// or dies
 			newLife = false;
 		}
-		
+				
+		// update background and 'oldLife'
 		this.setBackground((newLife) ? liveColor : deadColor);
-		
-		// update 'oldLife'
 		oldLife = newLife;
-	}
-	
-	// OVERRIDE METHOD 'run()' //
-	
-	@Override
-	public void run() {
-		countNeighbors();
-		System.out.println(Thread.currentThread().getName() + " DIES");
 	}
 
 }

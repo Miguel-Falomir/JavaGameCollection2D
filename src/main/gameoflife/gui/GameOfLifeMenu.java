@@ -69,13 +69,13 @@ public class GameOfLifeMenu extends GameMenu{
 	// VARIABLES //
 	
 	private Item[] gridRangeList = {
+		new GridRangeItem(12),
 		new GridRangeItem(24),
 		new GridRangeItem(48),
 		new GridRangeItem(60)
 	};
 	
 	private Item[] timeLapseList = {
-		new TimeLapseItem(3, "0.003 s"),
 		new TimeLapseItem(100, "0.10 s"),
 		new TimeLapseItem(250, "0.25 s"),
 		new TimeLapseItem(500, "0.50 s"),
@@ -95,7 +95,7 @@ public class GameOfLifeMenu extends GameMenu{
 	
 	private Item[] initialItemsList = {
 		gridRangeList[1],
-		timeLapseList[2],
+		timeLapseList[1],
 		cellColorList[0]
 	};
 	
