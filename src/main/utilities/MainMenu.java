@@ -16,9 +16,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import main.Gui;
-import main.gameoflife.gui.GameOfLifeMenu;
-import main.gameoflife.gui.GameOfLifeThread;
-//import main.gameoflife.gui.ScreenPanel;
+import main.gameoflife.GameOfLifeMenu;
+import main.gameoflife.GameOfLifeThread;
 
 public class MainMenu extends JPanel {
 	

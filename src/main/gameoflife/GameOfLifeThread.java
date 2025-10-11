@@ -1,4 +1,4 @@
-package main.gameoflife.gui;
+package main.gameoflife;
 
 import java.util.ArrayList;
 
