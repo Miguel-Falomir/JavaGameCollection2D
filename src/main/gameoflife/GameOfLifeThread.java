@@ -2,6 +2,8 @@ package main.gameoflife;
 
 import java.util.ArrayList;
 
+import javax.swing.SwingUtilities;
+
 import main.utilities.GameDisplay;
 import main.utilities.GameThread;
 
@@ -43,11 +45,13 @@ public class GameOfLifeThread extends GameThread {
 								cell.countNeighbors();
 							}
 						}
-						for (ArrayList<CellPanel> row : gold.getCellsGrid()) {
-							for (CellPanel cell : row) {
-								cell.updateGeneration();
+						SwingUtilities.invokeLater(() -> {
+							for (ArrayList<CellPanel> row : gold.getCellsGrid()) {
+								for (CellPanel cell : row) {
+									cell.updateGeneration();
+								}
 							}
-						}
+						});
 						long endTime = System.currentTimeMillis() - startTime;
 						System.out.println(endTime);
 						synchronized (this) {							
