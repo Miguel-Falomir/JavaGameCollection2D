@@ -1,10 +1,12 @@
 package main.utilities;
 
+import java.util.ArrayList;
+
 public class GameThread implements GameRunnable {
 	
 	// SHARED OBJECT //
 	
-	protected GameDisplay display;
+	private GameDisplay display;
 	
 	// VARIABLES //
 	
@@ -25,9 +27,7 @@ public class GameThread implements GameRunnable {
 	@Override
 	public void start() {
 		display.setStatus(2);
-		if (thread == null) {
-			thread = new Thread(this);
-		}
+		if (thread == null) {thread = new Thread(this);}
 		thread.start();
 	}
 	

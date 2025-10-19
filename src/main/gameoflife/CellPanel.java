@@ -3,6 +3,7 @@ package main.gameoflife;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -21,6 +22,9 @@ public class CellPanel extends JPanel implements MouseListener {
 	private boolean oldLife;
 	private boolean newLife;
 	private int[] position = {0,0};
+	private ArrayList<int[]> neighborPositions;
+	private int axis_x;
+	private int axis_y;
 	private int neighbors;
 	private Color liveColor;
 	private Color deadColor;
@@ -28,16 +32,6 @@ public class CellPanel extends JPanel implements MouseListener {
 	// GETTERS AND SETTERS //
 	
 	public boolean getOldLife() {return oldLife;}
-	
-	public void setOldLife(boolean life) {
-		this.oldLife = life;
-	}
-	
-	public boolean getNewLife() {return newLife;}
-	
-	public void setNewLife(boolean life) {
-		this.newLife = life;
-	}
 	
 	public void setLiveColor(Color liveColor) {
 		this.liveColor = liveColor;
@@ -53,6 +47,18 @@ public class CellPanel extends JPanel implements MouseListener {
 		this.liveColor = lifeColor;
 		this.deadColor = Color.BLACK;
 		this.addMouseListener(this);
+		this.axis_x = position[1];
+		this.axis_y = position[0];
+		this.neighborPositions = new ArrayList<int[]>();
+		// fulfill 'neighborPositions'
+		this.neighborPositions.add(new int[] {axis_x - 1, axis_y - 1});	// top-left
+		this.neighborPositions.add(new int[] {axis_x, axis_y - 1});		// top-middle
+		this.neighborPositions.add(new int[] {axis_x + 1, axis_y - 1});	// top-right
+		this.neighborPositions.add(new int[] {axis_x - 1, axis_y});		// mid-left
+		this.neighborPositions.add(new int[] {axis_x + 1, axis_y});		// mid-right
+		this.neighborPositions.add(new int[] {axis_x - 1, axis_y + 1});	// bot-left
+		this.neighborPositions.add(new int[] {axis_x, axis_y + 1});		// bot-middle
+		this.neighborPositions.add(new int[] {axis_x + 1, axis_y + 1});	// bot-right
 	}
 	
 	// ACTION LISTENERS //
@@ -91,18 +97,6 @@ public class CellPanel extends JPanel implements MouseListener {
 	
 	public void countNeighbors() {
 		// calculate the index of each neighbor
-		int axis_X = position[1];
-		int axis_Y = position[0];
-		int[][] neighborPositions = {
-			new int[] {axis_X - 1, axis_Y - 1},	// top-left
-			new int[] {axis_X, axis_Y - 1},		// top-middle
-			new int[] {axis_X + 1, axis_Y - 1},	// top-right
-			new int[] {axis_X - 1, axis_Y},		// mid-left
-			new int[] {axis_X + 1, axis_Y},		// mid-right
-			new int[] {axis_X - 1, axis_Y + 1},	// bot-left
-			new int[] {axis_X, axis_Y + 1},		// bot-middle
-			new int[] {axis_X + 1, axis_Y + 1}	// bot-right
-		};
 		neighbors = 0;
 		
 		// count how many neighbors are alive (oldLife == true)
@@ -120,23 +114,27 @@ public class CellPanel extends JPanel implements MouseListener {
 			}
 		}
 		
+		// set if this cell lives for the next generation or dies
+		if ((oldLife == true)) {
+			newLife = (neighbors == 2 || neighbors == 3) ? true : false;
+		} else {
+			newLife = (neighbors == 3) ? true : false;
+		}	
 	}
 	
-	// METHOD UPDATE TO NEXT GENERATION //
+	// METHOD UPDATE GENERATION COLOR //
 	
 	public void updateGeneration() {
-		// set if this cell lives for the next generation...
-		if ((oldLife == true)  && (neighbors == 2 || neighbors == 3) ||
-			(oldLife == false) && (neighbors == 3)
-		) {
-			newLife = true;
-		} else {// or dies
-			newLife = false;
-		}
-				
-		// update background and 'oldLife'
 		this.setBackground((newLife) ? liveColor : deadColor);
 		oldLife = newLife;
+	}
+	
+	// METHOD CLEAR CELL //
+	
+	public void clear() {
+		oldLife = false;
+		newLife = false;
+		this.setBackground(deadColor);
 	}
 
 }

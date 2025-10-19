@@ -161,24 +161,24 @@ public class GameOfLifeDisplay extends GameDisplay {
 		
 		// refill 'cellsList' separately
 		if (this.lastChange == 3) {
-			// declare new list
+			// declare new grid
 			ArrayList<ArrayList<CellPanel>> newGrid = new ArrayList<ArrayList<CellPanel>>();
-			// save cells of 'cellsList' in new list
+			// save cells of 'cellsGrid' in new grid
 			for (ArrayList<CellPanel> row : cellsGrid) {newGrid.add(row);}
-			// clear 'cellsList'
+			// clear 'cellsGrid'
 			cellsGrid.clear();
-			// update 'cellsList' with new list cells
+			// update 'cellsGrid' with new grid cells
 			for (ArrayList<CellPanel> row : newGrid) {cellsGrid.add(row);}
 		} else {
 			// calculate length (px) of cell side
 			int side = (int) (panelSize[1].getWidth() / gridRange);
-			// clear 'cellsList'
+			// clear 'cellsGrid'
 			cellsGrid.clear();
 			// for each new cell:
 			for (int i = 0; i < gridRange; i++) {
 				// create new arraylist
-				ArrayList<CellPanel> list = new ArrayList<CellPanel>();
-				// fulfill each new list
+				ArrayList<CellPanel> row = new ArrayList<CellPanel>();
+				// fulfill arraylist
 				for (int j = 0; j < gridRange; j++) {				
 					// set cell border separately
 					MatteBorder border;
@@ -201,10 +201,10 @@ public class GameOfLifeDisplay extends GameDisplay {
 					);
 					cell.setBackground(Color.black);
 					cell.setBorder(border);
-					list.add(cell);
+					row.add(cell);
 				}
 				// add new arraylist to grid as a new row
-				cellsGrid.add(list);
+				cellsGrid.add(row);
 			}
 		}
 		
