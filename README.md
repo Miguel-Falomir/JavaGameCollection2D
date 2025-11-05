@@ -75,7 +75,7 @@ Coming soon (I guess...)
 ## Contributing
 
 Please don't. Programming is nearly as personal as hand-written calligraphy or fingerprints.
-You are free to download source code and tune it to your own version (as far as the MIT license allows), but I wouldn't like others to see your contribution and think that I write code like that.
+You are free to download source code and tune it to your own version (as far as the MIT license allows), but please save your own version in your own repository.
 Keep your own style, and let me keep my own.
 
 ## License
