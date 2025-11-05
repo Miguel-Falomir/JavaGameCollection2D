@@ -17,7 +17,6 @@ import javax.swing.border.EmptyBorder;
 
 import main.Gui;
 import main.gameoflife.GameOfLifeMenu;
-import main.gameoflife.GameOfLifeThread;
 
 public class MainMenu extends JPanel {
 	
@@ -179,6 +178,15 @@ public class MainMenu extends JPanel {
 			pan.add(btn, gbcCentered);
 			centerPanel.add(pan);
 		}
+		// disable buttons of not implemented games
+		gameButtonList[0].setEnabled(false);
+		///gameButtonList[1].setEnabled(false);
+		gameButtonList[2].setEnabled(false);
+		gameButtonList[3].setEnabled(false);
+		gameButtonList[4].setEnabled(false);
+		gameButtonList[5].setEnabled(false);
+		gameButtonList[6].setEnabled(false);
+		gameButtonList[7].setEnabled(false);
 		
 		// bottom
 		// set properties
