@@ -30,10 +30,12 @@ This program bundles a java version of these 8 games:
  + Pacman
 
 Also implements a settings menu that allows user to set language and theme.
+
 Language can be set to:
  + English
  + Spanish
  + French (Not yet implemented at this moment)
+
 Theme can be set to:
  + Metal
  + Nimbus
